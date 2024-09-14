@@ -1,4 +1,4 @@
--- loadstring(game:HttpGet("https://raw.githubusercontent.com/xBackpack/PressureLib/main/main.lua"))()
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/xBackpack/PressureHub/main/main.lua"))()
 
 local workspace = game:GetService("Workspace")
 local players = game:GetService("Players")
@@ -10,7 +10,7 @@ local player = players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character.Humanoid
 
-local repo = "https://raw.githubusercontent.com/xBackpack/Pressure-Script/main/"
+local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/"
 local addons = repo .. "addons/"
 
 local Utilities = loadstring(game:HttpGet(repo .. 'Utils.lua'))()
