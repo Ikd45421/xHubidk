@@ -17,17 +17,6 @@ local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 
-print("Loading!")
-
-local function reset()
-	walkSpeed:SetValue("16")
-	fullbrightToggle:SetValue(false)
-	fovSlider:SetValue("70)
-	Library:Unload()
-end
-
-reset()
-
 local UI = Library:CreateWindow({
 	Title = "Pressure Hub - " .. player.DisplayName,
 	Center = true,
@@ -87,3 +76,11 @@ local fovSlider = Visual.Camera:AddSlider(2, {
 })
 
 local unloadButton = Settings.Config:AddButton("Unload", reset)
+
+local function reset()
+	humanoid.WalkSpeed = 16
+	camera.FieldOfView = 70
+	lighting.Brightness = 2
+	lighting.Ambient = Color3.fromRGB(70, 70, 70)
+	Library:Unload()
+end
