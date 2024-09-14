@@ -17,6 +17,8 @@ local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 
+reset()
+
 local UI = Library:CreateWindow({
 	Title = "Pressure - " .. player.DisplayName,
 	Center = true,
