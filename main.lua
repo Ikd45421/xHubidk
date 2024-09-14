@@ -17,8 +17,6 @@ local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 
-print("Loading Pressure Hub")
-
 local function reset()
 	walkSpeed:SetValue("16")
 	fullbrightToggle:SetValue(false)
