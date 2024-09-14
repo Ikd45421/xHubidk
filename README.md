@@ -7,3 +7,14 @@ This is a lightweight script for Roblox Pressure! I only made this since I could
 3. Execute
 
 Done!
+
+## Upcoming Features
+- Instant Interact
+- Auto Interact
+- ESP for doors, documents, entities, items, keycards, lockers, and more!
+- Entity Notifier
+- Auto revive
+- Unredact all documents
+- Fly
+- Noclip
+- Godmode
