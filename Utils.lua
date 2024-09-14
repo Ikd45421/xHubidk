@@ -3,11 +3,11 @@ local lighting = game:GetService("Lighting")
 
 local camera = workspace.Camera
 
-local function setWalkSpeed(humanoid, newSpeed)
+function setWalkSpeed(humanoid, newSpeed)
     humanoid.WalkSpeed = newSpeed
 end
 
-local function setFullbright(enabled)
+function setFullbright(enabled)
     if enabled then
         lighting.Brightness = 25
         lighting.Ambient = Color3.fromRGB(255, 255, 255)
@@ -17,11 +17,11 @@ local function setFullbright(enabled)
     end
 end
 
-local function setFieldOfView(newFOV)
+function setFOV(newFOV)
     camera.FieldOfView = newFOV
 end
 
-local function reset(lib)
+function reset(lib)
     setWalkSpeed(16)
     setFullbright(false)
     setFieldOfView(70)
