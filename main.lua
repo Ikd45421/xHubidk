@@ -10,7 +10,7 @@ local player = players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character.Humanoid
 
-local repo = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main"
+local repo = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
 local addons = repo .. "addons/"
 
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
