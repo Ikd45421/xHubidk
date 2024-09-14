@@ -18,7 +18,14 @@ local ThemeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 
 local Toggles = getgenv().Toggles
-local Library = getgenv().Options
+local Options = getgenv().Options
+
+local function reset()
+	Options[0]:SetValue(16)
+	Toggles[0]:SetValue(false)
+	Options[1]:SetValue(70)
+	Library:Unload()
+end
 
 local UI = Library:CreateWindow({
 		Title = "Pressure Hub - " .. player.DisplayName,
@@ -63,10 +70,10 @@ local fullbrightToggle = Visual.Lighting:AddToggle(0, {
 		Callback = function(value)
 			if value then
 				lighting.Brightness = 25
-				lighting.Ambience = Color3.fromRGB(255, 255, 255)
+				lighting.Ambient = Color3.fromRGB(255, 255, 255)
 			else
-				lighting.Brightness = 2
-				lighting.Ambience = Color3.fromRGB(70, 70, 70)
+				lighting.Brightness = 3
+				lighting.Ambient = Color3.fromRGB(40, 53, 65)
 			end
 		end
 	}
@@ -83,12 +90,4 @@ local fovSlider = Visual.Camera:AddSlider(1, {
 )
 
 local unloadButton = Settings.Config:AddButton("Unload", function() reset() end)
-
-local function reset()
-	Toggles[0]:SetValue(false)
-	Options[0]:SetValue(16)
-	Options[1]:SetValue(70)
-	Library:Unload()
-end
-
 
