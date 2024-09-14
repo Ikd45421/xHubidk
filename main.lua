@@ -68,4 +68,4 @@ local fovSlider = Visual.Camera:AddSlider(2, {
 	Callback = function(value) Utilities.setFieldOfView(value) end
 })
 
-local unloadButton = Settings.Config:AddButton("Unload", function() Utilities.reset() end)
+local unloadButton = Settings.Config:AddButton("Unload", function() Utilities.reset(Library) end)
