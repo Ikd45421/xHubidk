@@ -18,11 +18,15 @@ local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 
+local Toggles = getgenv().Toggles
+local Library = getgenv().Options
+
 local UI = Library:CreateWindow({
-	Title = "Pressure Hub - " .. player.DisplayName,
-	Center = true,
-	AutoShow = true
-})
+		Title = "Pressure Hub - " .. player.DisplayName,
+		Center = true,
+		AutoShow = true
+	}
+)
 
 local Tabs = {
 	Player = UI:AddTab("Player"),
@@ -44,28 +48,48 @@ local Settings = {
 }
 
 local walkspeedSlider = Player.Movement:AddSlider(0, {
-	Text = "Walk Speed",
-	Default = 16,
-	Min = 0,
-	Max = 100,
-	Rounding = 0,
-	Callback = function(value) Utilities.setWalkSpeed(humanoid, value) end
-})
+		Text = "Walk Speed",
+		Default = 16,
+		Min = 0,
+		Max = 100,
+		Rounding = 0,
+		Callback = function(value) humanoid.WalkSpeed = value end
+	}
+)
 
 local fullbrightToggle = Visual.Lighting:AddToggle(0, {
-	Text = "Fullbright",
-	Default = false,
-	Risky = false,
-	Callback = function(value) Utilities.setFullbright(value) end
-})
+		Text = "Fullbright",
+		Default = false,
+		Risky = false,
+		Callback = function(value)
+			if value then
+				lighting.Brightness = 25
+				lighting.Ambience = Color3.fromRGB(255, 255, 255)
+			else
+				lighting.Brightness = 2
+				lighting.Ambience = Color3.fromRGB(70, 70, 70)
+			end
+		end
+	}
+)
+	
+local fovSlider = Visual.Camera:AddSlider(1, {
+			Text = "Field of View",
+			Default = 70,
+			Min = 30,
+			Max = 120,
+			Rounding = 0, 
+			Callback = function(value) camera.FieldOfView = value end
+	}
+)
 
-local fovSlider = Visual.Camera:AddSlider(2, {
-	Text = "Field of View",
-	Default = 70,
-	Min = 30,
-	Max = 120,
-	Rounding = 0, 
-	Callback = function(value) Utilities.setFieldOfView(value) end
-})
+local unloadButton = Settings.Config:AddButton("Unload", function() reset() end)
 
-local unloadButton = Settings.Config:AddButton("Unload", function() Utilities.reset(Library) end)
+local function reset()
+	Toggles[0]:SetValue(false)
+	Options[0]:SetValue(16)
+	Options[1]:SetValue(70)
+	Library:Unload()
+end
+
+
