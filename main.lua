@@ -13,6 +13,7 @@ local humanoid = character.Humanoid
 local repo = "https://raw.githubusercontent.com/xBackpack/Pressure-Script/main/"
 local addons = repo .. "addons/"
 
+local Utilities = loadstring(game:HttpGet(repo .. 'Utils.lua'))()
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
@@ -48,22 +49,14 @@ local walkspeedSlider = Player.Movement:AddSlider(0, {
 	Min = 0,
 	Max = 100,
 	Rounding = 0,
-	Callback = function(value) humanoid.WalkSpeed = value end
+	Callback = function(value) Utilities.setWalkSpeed(humanoid, value) end
 })
 
 local fullbrightToggle = Visual.Lighting:AddToggle(0, {
 	Text = "Fullbright",
 	Default = false,
 	Risky = false,
-	Callback = function(value)
-		if value then
-			lighting.Brightness = 25
-			lighting.Ambient = Color3.fromRGB(255, 255, 255)
-		else
-			lighting.Brightness = 2
-			lighting.Ambient = Color3.fromRGB(70, 70, 70)
-		end
-	end
+	Callback = function(value) Utilities.setFullbright(value) end
 })
 
 local fovSlider = Visual.Camera:AddSlider(2, {
@@ -71,16 +64,8 @@ local fovSlider = Visual.Camera:AddSlider(2, {
 	Default = 70,
 	Min = 30,
 	Max = 120,
-	Rounding = 0,
-	Callback = function(value) camera.FieldOfView = value end
+	Rounding = 0, 
+	Callback = function(value) Utilities.setFieldOfView(value) end
 })
 
-local unloadButton = Settings.Config:AddButton("Unload", reset)
-
-local function reset()
-	humanoid.WalkSpeed = 16
-	camera.FieldOfView = 70
-	lighting.Brightness = 2
-	lighting.Ambient = Color3.fromRGB(70, 70, 70)
-	Library:Unload()
-end
+local unloadButton = Settings.Config:AddButton("Unload", function() Utilities.reset() end)
