@@ -42,7 +42,7 @@ local Settings = {
 	Config = Tabs.Settings:AddLeftGroupbox("Config")
 }
 
-Player.Movement:AddSlider(0, {
+local walkspeedSlider = Player.Movement:AddSlider(0, {
 	Text = "Walk Speed",
 	Default = 16,
 	Min = 0,
@@ -51,7 +51,7 @@ Player.Movement:AddSlider(0, {
 	Callback = function(value) humanoid.WalkSpeed = value end
 })
 
-Visual.Lighting:AddToggle(0, {
+local fullbrightToggle = Visual.Lighting:AddToggle(0, {
 	Text = "Fullbright",
 	Default = false,
 	Risky = false,
@@ -66,7 +66,7 @@ Visual.Lighting:AddToggle(0, {
 	end
 })
 
-Visual.Camera:AddSlider(2, {
+local fovSlider = Visual.Camera:AddSlider(2, {
 	Text = "Field of View",
 	Default = 70,
 	Min = 30,
@@ -75,4 +75,11 @@ Visual.Camera:AddSlider(2, {
 	Callback = function(value) camera.FieldOfView = value end
 })
 
-Settings.Config:AddButton("Unload", function() Library:Unload() end)
+local unloadButton = Settings.Config:AddButton("Unload", reset)
+
+local function reset()
+	walkSpeed:SetValue("16")
+	fullbrightToggle:SetValue(false)
+	fovSlider:SetValue("70)
+	Library:Unload()
+end
