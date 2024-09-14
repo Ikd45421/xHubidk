@@ -17,17 +17,13 @@ local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 
-local Toggles = getgenv().Toggles
 local Options = getgenv().Options
+local Toggles = getgenv().Toggles
 
 local function reset()
-	for _, toggle in next, Toggles do
-		toggle:SetValue(toggle.Default)
-	end
-
-	for _, option in next, Options do
-		option:SetValue(option.Default)
-	end
+	Options[0]:SetValue(0)
+	Toggles[0]:SetValue(false)
+	Options[1]:SetValue(70)
 	
 	Library:Unload()
 end
@@ -59,7 +55,7 @@ local Settings = {
 }
 
 local walkspeedSlider = Player.Movement:AddSlider(0, {
-		Text = "SpeedBoost",
+		Text = "Speed Boost",
 		Default = 0,
 		Min = 0,
 		Max = 100,
@@ -85,7 +81,7 @@ local fullbrightToggle = Visual.Lighting:AddToggle(0, {
 )
 
 local fovSlider = Visual.Camera:AddSlider(1, {
-		Text = "FieldOfView",
+		Text = "FOV",
 		Default = 70,
 		Min = 30,
 		Max = 120,
