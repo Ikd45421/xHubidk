@@ -10,7 +10,7 @@ local player = players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character.Humanoid
 
-local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/"
+local repo = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main"
 local addons = repo .. "addons/"
 
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
@@ -21,9 +21,14 @@ local Toggles = getgenv().Toggles
 local Options = getgenv().Options
 
 local function reset()
-	Options[0]:SetValue(0)
-	Toggles[0]:SetValue(false)
-	Options[1]:SetValue(70)
+	for _, toggle in next, Toggles do
+		toggle:SetValue(toggle.Default)
+	end
+
+	for _, option in next, Options do
+		option:SetValue(option.Default)
+	end
+	
 	Library:Unload()
 end
 
@@ -54,7 +59,7 @@ local Settings = {
 }
 
 local walkspeedSlider = Player.Movement:AddSlider(0, {
-		Text = "Speed Boost",
+		Text = "SpeedBoost",
 		Default = 0,
 		Min = 0,
 		Max = 100,
@@ -78,16 +83,15 @@ local fullbrightToggle = Visual.Lighting:AddToggle(0, {
 		end
 	}
 )
-	
+
 local fovSlider = Visual.Camera:AddSlider(1, {
-			Text = "Field of View",
-			Default = 70,
-			Min = 30,
-			Max = 120,
-			Rounding = 0, 
-			Callback = function(value) camera.FieldOfView = value end
+		Text = "FieldOfView",
+		Default = 70,
+		Min = 30,
+		Max = 120,
+		Rounding = 0, 
+		Callback = function(value) camera.FieldOfView = value end
 	}
 )
 
-local unloadButton = Settings.Config:AddButton("Unload", function() reset() end)
-
+local unloadButton = Settings.Config:AddButton("Unload", reset)
