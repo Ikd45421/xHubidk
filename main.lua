@@ -21,7 +21,7 @@ local Toggles = getgenv().Toggles
 local Options = getgenv().Options
 
 local function reset()
-	Options[0]:SetValue(16)
+	Options[0]:SetValue(0)
 	Toggles[0]:SetValue(false)
 	Options[1]:SetValue(70)
 	Library:Unload()
@@ -54,8 +54,8 @@ local Settings = {
 }
 
 local walkspeedSlider = Player.Movement:AddSlider(0, {
-		Text = "Walk Speed",
-		Default = 16,
+		Text = "Speed Boost",
+		Default = 0,
 		Min = 0,
 		Max = 100,
 		Rounding = 0,
