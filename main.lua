@@ -59,7 +59,7 @@ local walkspeedSlider = Player.Movement:AddSlider(0, {
 		Min = 0,
 		Max = 100,
 		Rounding = 0,
-		Callback = function(value) humanoid.WalkSpeed = value end
+		Callback = function(value) humanoid.WalkSpeed = 16 + value end
 	}
 )
 
