@@ -1,8 +1,8 @@
 local lighting = game:GetService("Lighting")
 
-local Lighting = {}
+local module = {}
 
-function Lighting:SetFullbright(enabled)
+function module:SetFullbright(enabled)
   if enabled then
     lighting.Brightness = 25
     lighting.Ambient = Color3.fromRGB(255, 255, 255)
@@ -12,4 +12,4 @@ function Lighting:SetFullbright(enabled)
   end
 end
 
-return Lighting
+return module
