@@ -1,18 +1,15 @@
--- Services --
+-- SERVICES --
 local workspace = game:GetService("Workspace")
 local lighting = game:GetService("Lighting")
 local players = game:GetService("Players")
-local contextActionService = game:GetService("ContextActionService")
+local proximityPromptService = game:GetService("ProximityPromptService")
 
--- Libraries -- 
-local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils/"
-local interactionManager = loadstring(game:HttpGet(repo .. 'InteractionManager.lua'))()
-
+-- LIBRARIES --
 local library = getgenv().Library
 local options = getgenv().Linoria.Options
 local toggles = getgenv().Linoria.Toggles
 
--- Hub --
+-- HUB --
 local player = players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character.Humanoid
@@ -45,6 +42,7 @@ local settings = {
 	Config = tabs.Settings:AddLeftGroupbox("Config")
 }
 
+-- SPEED --
 local speedBoost = player.Movement:AddSlider(0, {
 		Text = "Speed Boost",
 		Default = 0,
@@ -55,32 +53,45 @@ local speedBoost = player.Movement:AddSlider(0, {
 	}
 )
 
-player.Interaction:AddToggle(0, {
-		Text = "Instant Interact",
-		Default = false,
-		Risky = false,
-		Callback = function(value) interactions:SetInstantInteract(value) end
+player.Crouching.Changed:Connect(function(newValue)
+		if speedBoost.Value == 0 then return end
+		
+		humanoid.WalkSpeed = 16 + speedBoost.Value
+	end
+)
+
+-- Interactions --
+local instantInteract = player.Interaction:AddToggle(0, {
+		Text = "Instant Interact"
 	}
 )
 
+proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
+		if not instantInteract.Value then return end
+
+		prompt.HoldDuration = 0
+	end
+)
+
+-- Fullbright --
 visual.Lighting:AddToggle(1, {
-		Text = "Fullbright",
-		Default = false,
-		Risky = false,
+		Text = "Fullbright"
 		Callback = function(value) lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end end
 	}
 )
 
+-- Field of View --
 local FOV = visual.Camera:AddSlider(1, {
 		Text = "FOV",
-		Default = 70,
+		Default = 90,
 		Min = 30,
 		Max = 120,
 		Rounding = 0, 
 		Callback = function(value) camera.FieldOfView = value end
 	}
 )
-	
+
+-- Unload --
 settings.Config:AddButton("Unload", function()
 		speedBoost:SetValue(0)
 		FOV:SetValue(70)
