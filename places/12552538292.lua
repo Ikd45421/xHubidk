@@ -81,11 +81,13 @@ visual.Camera:AddSlider(1, {
 
 local ESPs = {
 	Item = visual.ESP:AddToggle(2, {
-			Text = "Item ESP"
+			Text = "Item ESP",
+			Risky = true
 		}
 	),
 	Door = visual.ESP:AddToggle(3, {
-			Text = "Door ESP"
+			Text = "Door ESP",
+			Risky = true
 		}
 	),
 	Currency = visual.ESP:AddToggle(4, {
