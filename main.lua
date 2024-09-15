@@ -1,9 +1,8 @@
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/xBackpack/PressureHub/main/main.lua"))()
 
+local uis = game:GetService("UserInputService")
 local workspace = game:GetService("Workspace")
 local players = game:GetService("Players")
-local lighting = game:GetService("Lighting")
-
 local camera = workspace.Camera
 
 local player = players.LocalPlayer
@@ -13,48 +12,46 @@ local humanoid = character.Humanoid
 local repo = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
 local addons = repo .. "addons/"
 
-local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
-local ThemeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
-local SaveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
+local library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local themeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
+local saveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 
-local Options = getgenv().Options
-local Toggles = getgenv().Toggles
+local privateRepo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/"
 
-local function reset()
-	Options[0]:SetValue(0)
-	Toggles[0]:SetValue(false)
-	Options[1]:SetValue(70)
-	
-	Library:Unload()
-end
+local lighting = loadstring(game:HttpGet(privateRepo .. 'Lighting.lua'))()
+local interactions = loadstring(game:HttpGet(privateRepo .. 'Interactions.lua'))()
 
-local UI = Library:CreateWindow({
+local options = getgenv().Options
+local toggles = getgenv().Toggles
+
+local window = library:CreateWindow({
 		Title = "Pressure Hub - " .. player.DisplayName,
 		Center = true,
 		AutoShow = true
 	}
 )
 
-local Tabs = {
-	Player = UI:AddTab("Player"),
-	Visual = UI:AddTab("Visual"),
-	Settings = UI:AddTab("Settings")
+local tabs = {
+	Player = window:AddTab("Player"),
+	Visual = window:AddTab("Visual"),
+	Settings = window:AddTab("Settings")
 }
 
-local Player = {
-	Movement = Tabs.Player:AddLeftGroupbox("Movement")
+local player = {
+	Movement = tabs.Player:AddLeftGroupbox("Movement"),
+	Interaction = tabs.Player:AddRightGroupbox("Interaction")
 }
 
-local Visual = {
-	Lighting = Tabs.Visual:AddLeftGroupbox("Lighting"),
-	Camera = Tabs.Visual:AddRightGroupbox("Camera")
+local visual = {
+	Lighting = tabs.Visual:AddLeftGroupbox("Lighting"),
+	Camera = tabs.Visual:AddRightGroupbox("Camera")
 }
 
-local Settings = {
-	Config = Tabs.Settings:AddLeftGroupbox("Config")
+local settings = {
+	Config = tabs.Settings:AddLeftGroupbox("Config")
 }
 
-local walkspeedSlider = Player.Movement:AddSlider(0, {
+player.Movement:AddSlider(0, {
 		Text = "Speed Boost",
 		Default = 0,
 		Min = 0,
@@ -64,23 +61,29 @@ local walkspeedSlider = Player.Movement:AddSlider(0, {
 	}
 )
 
-local fullbrightToggle = Visual.Lighting:AddToggle(0, {
+player.Interaction:AddToggle(0, {
+		Text = "Instant Interact",
+		Default = false,
+		Risky = false,
+		Callback = function(value) interactions:SetInstantInteract(value) end
+})
+
+visual.Lighting:AddToggle(1, {
 		Text = "Fullbright",
 		Default = false,
 		Risky = false,
-		Callback = function(value)
-			if value then
-				lighting.Brightness = 25
-				lighting.Ambient = Color3.fromRGB(255, 255, 255)
-			else
-				lighting.Brightness = 3
-				lighting.Ambient = Color3.fromRGB(40, 53, 65)
-			end
-		end
+		Callback = function(value) lighting:SetFullbright(value) end
+			-- if value then
+			-- 	lighting.Brightness = 25
+			-- 	lighting.Ambient = Color3.fromRGB(255, 255, 255)
+			-- else
+			-- 	lighting.Brightness = 3
+			-- 	lighting.Ambient = Color3.fromRGB(40, 53, 65)
+			-- end
 	}
 )
 
-local fovSlider = Visual.Camera:AddSlider(1, {
+visual.Camera:AddSlider(1, {
 		Text = "FOV",
 		Default = 70,
 		Min = 30,
@@ -90,4 +93,14 @@ local fovSlider = Visual.Camera:AddSlider(1, {
 	}
 )
 
-local unloadButton = Settings.Config:AddButton("Unload", reset)
+settings.Config:AddButton("Unload", function()
+		Options[0]:SetValue(0)
+		Options[1]:SetValue(70)
+	
+		for _, toggle in next, Toggles do
+			toggle:SetValue(false)
+		end
+		
+		Library:Unload()
+	end
+)
