@@ -8,6 +8,7 @@ local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils
 
 loadstring(game:HttpGet(repo .. "InteractionManager.lua"))()
 loadstring(game:HttpGet(repo .. "MovementManager.lua"))()
+loadstring(game:HttpGet(repo .. "ESPManager.lua"))()
 
 local library = getgenv().Library
 local options = getgenv().Linoria.Options
@@ -39,7 +40,8 @@ local player = {
 
 local visual = {
 	Lighting = tabs.Visual:AddLeftGroupbox("Lighting"),
-	Camera = tabs.Visual:AddRightGroupbox("Camera")
+	Camera = tabs.Visual:AddRightGroupbox("Camera"),
+	ESP = tabs.Visual:AddLeftGroupbox("ESP")
 }
 
 local settings = {
@@ -67,8 +69,8 @@ getgenv().fullbright = visual.Lighting:AddToggle(1, {
 	}
 )
 
-getgenv().FOV = visual.Camera:AddSlider(1, {
-		Text = "FOV",
+getgenv().fieldOfView = visual.Camera:AddSlider(1, {
+		Text = "Field Of View",
 		Default = 90,
 		Min = 30,
 		Max = 120,
@@ -77,10 +79,20 @@ getgenv().FOV = visual.Camera:AddSlider(1, {
 	}
 )
 
--- Unload --
-settings.Config:AddButton("Unload", function()
+getgenv().ESPs = {
+	Item = visual.ESP:AddToggle(2, {
+			Text = "Item ESP"
+		}
+	),
+	Door = visual.ESP:AddToggle(3, {
+			Text = "Door ESP"
+		}
+	)
+}
+	
+getgenv().unload = settings.Config:AddButton("Unload", function()
 		getgenv().speedBoost:SetValue(0)
-		getgenv().FOV:SetValue(70)
+		getgenv().fieldOfView:SetValue(70)
 		for _, toggle in next, Toggles do toggle:SetValue(false) end
 	
 		Library:Unload()
