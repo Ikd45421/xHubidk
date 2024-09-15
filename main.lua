@@ -3,7 +3,9 @@
 local inGame = game.PlaceId == 12411473842
 
 local places = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/places/"
+local pressure = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/places/12411473842.lua"
 
-print("D")
-
-if inGame then print("E"); loadstring(game:HttpGet(places .. game.PlaceId .. ".lua"))() end
+if inGame then
+  print(game.PlaceId)
+  loadstring(game:HttpGet(pressure)()
+end
