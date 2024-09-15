@@ -54,7 +54,7 @@ player.Movement:AddSlider(0, {
 		Text = "Speed Boost",
 		Default = 0,
 		Min = 0,
-		Max = 100,
+		Max = 30,
 		Rounding = 0,
 		Callback = function(value) humanoid.WalkSpeed = 16 + value end
 	}
