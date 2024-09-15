@@ -1,7 +1,8 @@
 -- Services --
 local workspace = game:GetService("Workspace")
-local players = game:GetService("Players")
 local lighting = game:GetService("Lighting")
+local players = game:GetService("Players")
+local contextActionService = game:GetService("ContextActionService")
 
 -- Libraries -- 
 local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils/"
@@ -66,12 +67,9 @@ visual.Lighting:AddToggle(1, {
 		Text = "Fullbright",
 		Default = false,
 		Risky = false,
-		Callback = function(value) lighting.Ambient = 
-			if value then Color3.fromRGB(255, 255, 255)
-			else Color3.fromRGB(40, 53, 65) end
-		}
-	)
-
+		Callback = function(value) lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end end
+	}
+)
 
 local FOV = visual.Camera:AddSlider(1, {
 		Text = "FOV",
@@ -82,13 +80,12 @@ local FOV = visual.Camera:AddSlider(1, {
 		Callback = function(value) camera.FieldOfView = value end
 	}
 )
-
+	
 settings.Config:AddButton("Unload", function()
 		speedBoost:SetValue(0)
 		FOV:SetValue(70)
-	
 		for _, toggle in next, Toggles do toggle:SetValue(false) end
-		
+	
 		Library:Unload()
 	end
 )
