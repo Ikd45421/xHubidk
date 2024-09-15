@@ -9,7 +9,7 @@ function module:SetInstantInteract(value)
 end
 
 pps.PromptButtonHoldBegan:Connect(function(prompt, player)
-    if not mndule.enabled then return end
+    if not module.enabled then return end
 
     prompt.HoldDuration = 0
   end
