@@ -63,7 +63,7 @@ getgenv().instantInteract = player.Interaction:AddToggle(0, {
 
 getgenv().fullbright = visual.Lighting:AddToggle(1, {
 		Text = "Fullbright",
-		Callback = function(value) lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end end
+		Callback = function(value) lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end
 	}
 )
 
