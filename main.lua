@@ -1,9 +1,9 @@
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/xBackpack/PressureHub/main/main.lua"))()
 
-local inGame = game.PlaceId == 12411473842
+local pressureId = 12552538292
 
-local pressure = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/places/12411473842.lua"
+local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/places/"
 
-if inGame then
-  loadstring(game:HttpGet(pressure))()
+if game.PlaceId == pressureId then
+  loadstring(game:HttpGet(repo .. game.PlaceId .. ".lua"))()
 end
