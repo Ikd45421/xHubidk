@@ -14,3 +14,5 @@ pps.PromptButtonHoldBegan:Connect(function(prompt, player)
     prompt.HoldDuration = 0
   end
 )
+
+return module
