@@ -6,4 +6,4 @@ local places = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/pla
 
 print("D")
 
-if inGame then loadstring(game:HttpGet(places .. game.PlaceId .. ".lua"))(); print("E") end
+if inGame then print("E"); loadstring(game:HttpGet(places .. game.PlaceId .. ".lua"))() end
