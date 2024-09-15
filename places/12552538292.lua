@@ -48,7 +48,7 @@ local settings = {
 	Config = tabs.Settings:AddLeftGroupbox("Config")
 }
 
-getgenv().speedBoost = player.Movement:AddSlider(0, {
+player.Movement:AddSlider(0, {
 		Text = "Speed Boost",
 		Default = 0,
 		Min = 0,
@@ -58,18 +58,18 @@ getgenv().speedBoost = player.Movement:AddSlider(0, {
 	}
 )
 
-getgenv().instantInteract = player.Interaction:AddToggle(0, {
+player.Interaction:AddToggle(0, {
 		Text = "Instant Interact"
 	}
 )
 
-getgenv().fullbright = visual.Lighting:AddToggle(1, {
+visual.Lighting:AddToggle(1, {
 		Text = "Fullbright",
 		Callback = function(value) lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end
 	}
 )
 
-getgenv().fieldOfView = visual.Camera:AddSlider(1, {
+visual.Camera:AddSlider(1, {
 		Text = "Field Of View",
 		Default = 90,
 		Min = 30,
@@ -79,7 +79,7 @@ getgenv().fieldOfView = visual.Camera:AddSlider(1, {
 	}
 )
 
-getgenv().ESPs = {
+local ESPs = {
 	Item = visual.ESP:AddToggle(2, {
 			Text = "Item ESP"
 		}
@@ -87,12 +87,20 @@ getgenv().ESPs = {
 	Door = visual.ESP:AddToggle(3, {
 			Text = "Door ESP"
 		}
+	),
+	Currency = visual.ESP:AddToggle(4, {
+			Text = "Currency ESP"
+		}
+	),
+	Key = visual.ESP:AddToggle(5, {
+			Text = "Key ESP"
+		}
 	)
 }
 	
-getgenv().unload = settings.Config:AddButton("Unload", function()
-		getgenv().speedBoost:SetValue(0)
-		getgenv().fieldOfView:SetValue(70)
+settings.Config:AddButton("Unload", function()
+		toggles[0]:SetValue(0)
+		toggles[1]:SetValue(70)
 		for _, toggle in next, Toggles do toggle:SetValue(false) end
 	
 		Library:Unload()
