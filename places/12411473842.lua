@@ -1,11 +1,7 @@
-print("B")
-
 local workspace = game:GetService("Workspace")
 local players = game:GetService("Players")
 local lighting = game:GetService("Lighting")
 local camera = workspace.Camera
-
-print("A")
 
 local player = players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
@@ -20,8 +16,6 @@ local saveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 
 local privateRepo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils/"
 
-print("A")
-
 local interactions = loadstring(game:HttpGet(privateRepo .. 'Interactions.lua'))()
 
 local options = getgenv().Options
@@ -33,8 +27,6 @@ local window = library:CreateWindow({
 		AutoShow = true
 	}
 )
-
-print("A")
 
 local tabs = {
 	Player = window:AddTab("Player"),
