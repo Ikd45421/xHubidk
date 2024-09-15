@@ -66,7 +66,7 @@ local speedBoost = player.Movement:AddSlider(0, {
 	}
 )
 
-instantInteract = player.Interaction:AddToggle(0, {
+player.Interaction:AddToggle(0, {
 		Text = "Instant Interact",
 		Default = false,
 		Risky = false,
@@ -75,16 +75,15 @@ instantInteract = player.Interaction:AddToggle(0, {
 )
 
 visual.Lighting:AddToggle(1, {
-    Text = "Fullbright",
+		Text = "Fullbright",
 		Default = false,
 		Risky = false,
-		Callback = function(value)
-      lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end
-    end
-	}
-)
+		Callback = function(value) lighting.Ambient = 
+			if value then Color3.fromRGB(255, 255, 255)
+			else Color3.fromRGB(40, 53, 65) end
+		}
+	)
 
-print("A")
 
 local FOV = visual.Camera:AddSlider(1, {
 		Text = "FOV",
@@ -100,9 +99,7 @@ settings.Config:AddButton("Unload", function()
 		speedBoost:SetValue(0)
 		FOV:SetValue(70)
 	
-		for _, toggle in next, Toggles do
-			toggle:SetValue(false)
-		end
+		for _, toggle in next, Toggles do toggle:SetValue(false) end
 		
 		Library:Unload()
 	end
