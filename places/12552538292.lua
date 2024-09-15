@@ -5,16 +5,11 @@ local lighting = game:GetService("Lighting")
 
 -- Libraries -- 
 local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils/"
-local linoriaLib = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
-local addons = linoriaLib .. "addons/"
-
-local library = loadstring(game:HttpGet(linoriaLib .. 'Library.lua'))()
-local themeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
-local saveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 local interactionManager = loadstring(game:HttpGet(repo .. 'InteractionManager.lua'))()
 
-local options = getgenv().Options
-local toggles = getgenv().Toggles
+local library = getgenv().Library
+local options = getgenv().Linoria.Options
+local toggles = getgenv().Linoria.Toggles
 
 -- Hub --
 local player = players.LocalPlayer
