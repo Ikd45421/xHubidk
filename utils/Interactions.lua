@@ -6,6 +6,7 @@ local module = {
 
 function module:SetInstantInteract(value)
   module.enabled = value
+  print("B")
 end
 
 pps.PromptButtonHoldBegan:Connect(function(prompt, player)
