@@ -2,9 +2,13 @@
 local workspace = game:GetService("Workspace")
 local lighting = game:GetService("Lighting")
 local players = game:GetService("Players")
-local proximityPromptService = game:GetService("ProximityPromptService")
 
 -- LIBRARIES --
+local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils/"
+
+loadstring(game:HttpGet(repo .. "InteractionManager.lua"))()
+loadstring(game:HttpGet(repo .. "MovementManager.lua"))()
+
 local library = getgenv().Library
 local options = getgenv().Linoria.Options
 local toggles = getgenv().Linoria.Toggles
@@ -42,8 +46,7 @@ local settings = {
 	Config = tabs.Settings:AddLeftGroupbox("Config")
 }
 
--- SPEED --
-local speedBoost = player.Movement:AddSlider(0, {
+getgenv().speedBoost = player.Movement:AddSlider(0, {
 		Text = "Speed Boost",
 		Default = 0,
 		Min = 0,
@@ -53,35 +56,18 @@ local speedBoost = player.Movement:AddSlider(0, {
 	}
 )
 
-player.Crouching.Changed:Connect(function(newValue)
-		if speedBoost.Value == 0 then return end
-		
-		humanoid.WalkSpeed = 16 + speedBoost.Value
-	end
-)
-
--- Interactions --
-local instantInteract = player.Interaction:AddToggle(0, {
+getgenv().instantInteract = player.Interaction:AddToggle(0, {
 		Text = "Instant Interact"
 	}
 )
 
-proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
-		if not instantInteract.Value then return end
-
-		prompt.HoldDuration = 0
-	end
-)
-
--- Fullbright --
-visual.Lighting:AddToggle(1, {
+getgenv().fullbright = visual.Lighting:AddToggle(1, {
 		Text = "Fullbright",
 		Callback = function(value) lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end end
 	}
 )
 
--- Field of View --
-local FOV = visual.Camera:AddSlider(1, {
+getgenv().FOV = visual.Camera:AddSlider(1, {
 		Text = "FOV",
 		Default = 90,
 		Min = 30,
@@ -93,8 +79,8 @@ local FOV = visual.Camera:AddSlider(1, {
 
 -- Unload --
 settings.Config:AddButton("Unload", function()
-		speedBoost:SetValue(0)
-		FOV:SetValue(70)
+		getgenv().speedBoost:SetValue(0)
+		getgenv().FOV:SetValue(70)
 		for _, toggle in next, Toggles do toggle:SetValue(false) end
 	
 		Library:Unload()
