@@ -1,25 +1,26 @@
+-- Services --
 local workspace = game:GetService("Workspace")
 local players = game:GetService("Players")
 local lighting = game:GetService("Lighting")
-local camera = workspace.Camera
 
-local player = players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character.Humanoid
+-- Libraries -- 
+local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils/"
+local linoriaLib = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
+local addons = linoriaLib .. "addons/"
 
-local repo = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
-local addons = repo .. "addons/"
-
-local library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local library = loadstring(game:HttpGet(linoriaLib .. 'Library.lua'))()
 local themeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
 local saveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
-
-local privateRepo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils/"
-
-local interactions = loadstring(game:HttpGet(privateRepo .. 'Interactions.lua'))()
+local interactionManager = loadstring(game:HttpGet(repo .. 'InteractionManager.lua'))()
 
 local options = getgenv().Options
 local toggles = getgenv().Toggles
+
+-- Hub --
+local player = players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character.Humanoid
+local camera = workspace.Camera
 
 local window = library:CreateWindow({
 		Title = "Pressure Hub - " .. player.DisplayName,
