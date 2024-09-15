@@ -75,7 +75,7 @@ proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
 
 -- Fullbright --
 visual.Lighting:AddToggle(1, {
-		Text = "Fullbright"
+		Text = "Fullbright",
 		Callback = function(value) lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end end
 	}
 )
