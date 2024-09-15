@@ -36,7 +36,13 @@ local function setESPs(room, word)
 end
 
 for _, room in ipairs(rooms:GetChildren()) do
-	setESPs(room, "YourWord")
+	if toggles[4].Value then
+		setESPs(room, "Currency")
+	end
+	
+	if toggles[5].Value then
+		setESPs(room, "NormalKeyCard")
+	end
 end
 
 rooms.ChildAdded:Connect(function(room)
