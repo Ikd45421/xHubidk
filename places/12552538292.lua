@@ -9,7 +9,7 @@ local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils
 loadstring(game:HttpGet(repo .. "InteractionManager.lua"))()
 loadstring(game:HttpGet(repo .. "MovementManager.lua"))()
 loadstring(game:HttpGet(repo .. "FieldOfViewManager.lua"))()
-loadstring(game:HttpGet(repo .. "ESPManager.lua"))()
+-- loadstring(game:HttpGet(repo .. "ESPManager.lua"))()
 
 local library = getgenv().Library
 local options = getgenv().Linoria.Options
@@ -40,9 +40,8 @@ local player = {
 }
 
 local visual = {
-	Lighting = tabs.Visual:AddLeftGroupbox("Lighting"),
-	Camera = tabs.Visual:AddRightGroupbox("Camera"),
-	ESP = tabs.Visual:AddLeftGroupbox("ESP")
+	Camera = tabs.Visual:AddLeftGroupbox("Camera"),
+	Lighting = tabs.Visual:AddRightGroupbox("Lighting")
 }
 
 local settings = {
@@ -64,12 +63,6 @@ player.Interaction:AddToggle(0, {
 	}
 )
 
-visual.Lighting:AddToggle(1, {
-		Text = "Fullbright",
-		Callback = function(value) lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end
-	}
-)
-
 visual.Camera:AddSlider(1, {
 		Text = "Field Of View",
 		Default = 90,
@@ -80,30 +73,23 @@ visual.Camera:AddSlider(1, {
 	}
 )
 
-local ESPs = {
-	Item = visual.ESP:AddToggle(2, {
-			Text = "Item ESP",
-			Risky = true
-		}
-	),
-	Door = visual.ESP:AddToggle(3, {
-			Text = "Door ESP",
-			Risky = true
-		}
-	),
-	Currency = visual.ESP:AddToggle(4, {
-			Text = "Currency ESP"
-		}
-	),
-	Key = visual.ESP:AddToggle(5, {
-			Text = "Key ESP"
-		}
-	)
-}
+visual.Camera:AddDropdown(2, {
+		Text = "Tracers",
+		Values = {"Items", "Doors", "Players", "Keycards", "Money"},
+		Multi = true,
+		AllowNull = true
+	}
+)
+
+visual.Lighting:AddToggle(1, {
+		Text = "Fullbright",
+		Callback = function(value) lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end
+	}
+)
 	
 settings.Config:AddButton("Unload", function()
-		toggles[0]:SetValue(0)
-		toggles[1]:SetValue(70)
+		options[0]:SetValue(0)
+		options[1]:SetValue(70)
 		for _, toggle in next, Toggles do toggle:SetValue(false) end
 	
 		Library:Unload()
