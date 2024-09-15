@@ -1,9 +1,19 @@
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/xBackpack/PressureHub/main/main.lua"))()
 
-local pressureId = 12552538292
+local validPlaceIds = {12552538292, }
 
-local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/places/"
+local linoriaLib = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
+local addons = linoriaLib .. "addons/"
 
-if game.PlaceId == pressureId then
-  loadstring(game:HttpGet(repo .. game.PlaceId .. ".lua"))()
+local library = loadstring(game:HttpGet(linoriaLib .. 'Library.lua'))()
+local themeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
+local saveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
+
+local placesRepo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/places/"
+
+for _, id in pairs(validPlaceIds) do
+  if game.PlaceId == id then
+    loadstring(game:HttpGet(placesRepo .. game.PlaceId .. ".lua"))()
+    break
+  end
 end
