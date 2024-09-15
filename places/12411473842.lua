@@ -1,3 +1,5 @@
+print("B")
+
 local workspace = game:GetService("Workspace")
 local players = game:GetService("Players")
 local lighting = game:GetService("Lighting")
