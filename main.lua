@@ -1,5 +1,7 @@
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/xBackpack/PressureHub/main/main.lua"))()
 
+local inGame = game.PlaceId == 12411473842
+
 local workspace = game:GetService("Workspace")
 local players = game:GetService("Players")
 local camera = workspace.Camera
@@ -37,9 +39,20 @@ local tabs = {
 }
 
 local player = {
-	Movement = tabs.Player:AddLeftGroupbox("Movement"),
-	Interaction = tabs.Player:AddRightGroupbox("Interaction")
+	Movement = tabs.Player:AddLeftGroupbox("Movement")
 }
+
+if inGame then
+	player.Interaction = tabs.Player:AddRightGroupbox("Interaction")
+
+	player.Interaction:AddToggle(0, {
+		Text = "Instant Interact",
+		Default = false,
+		Risky = false,
+		Callback = function(value) interactions:SetInstantInteract(value) end
+		}
+	)
+end
 
 local visual = {
 	Lighting = tabs.Visual:AddLeftGroupbox("Lighting"),
@@ -50,7 +63,7 @@ local settings = {
 	Config = tabs.Settings:AddLeftGroupbox("Config")
 }
 
-player.Movement:AddSlider(0, {
+local speedBoost = player.Movement:AddSlider(0, {
 		Text = "Speed Boost",
 		Default = 0,
 		Min = 0,
@@ -60,13 +73,6 @@ player.Movement:AddSlider(0, {
 	}
 )
 
-player.Interaction:AddToggle(0, {
-		Text = "Instant Interact",
-		Default = false,
-		Risky = false,
-		Callback = function(value) interactions:SetInstantInteract(value) end
-})
-
 visual.Lighting:AddToggle(1, {
 		Text = "Fullbright",
 		Default = false,
@@ -75,7 +81,7 @@ visual.Lighting:AddToggle(1, {
 	}
 )
 
-visual.Camera:AddSlider(1, {
+local FOV = visual.Camera:AddSlider(1, {
 		Text = "FOV",
 		Default = 70,
 		Min = 30,
@@ -86,8 +92,8 @@ visual.Camera:AddSlider(1, {
 )
 
 settings.Config:AddButton("Unload", function()
-		Options[0]:SetValue(0)
-		Options[1]:SetValue(70)
+		speedBoost:SetValue(0)
+		FOV:SetValue(70)
 	
 		for _, toggle in next, Toggles do
 			toggle:SetValue(false)
