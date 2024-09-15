@@ -1,6 +1,5 @@
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/xBackpack/PressureHub/main/main.lua"))()
 
-local uis = game:GetService("UserInputService")
 local workspace = game:GetService("Workspace")
 local players = game:GetService("Players")
 local camera = workspace.Camera
@@ -73,13 +72,6 @@ visual.Lighting:AddToggle(1, {
 		Default = false,
 		Risky = false,
 		Callback = function(value) lighting:SetFullbright(value) end
-			-- if value then
-			-- 	lighting.Brightness = 25
-			-- 	lighting.Ambient = Color3.fromRGB(255, 255, 255)
-			-- else
-			-- 	lighting.Brightness = 3
-			-- 	lighting.Ambient = Color3.fromRGB(40, 53, 65)
-			-- end
 	}
 )
 
