@@ -9,7 +9,7 @@ local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils
 loadstring(game:HttpGet(repo .. "InteractionManager.lua"))()
 loadstring(game:HttpGet(repo .. "MovementManager.lua"))()
 loadstring(game:HttpGet(repo .. "FieldOfViewManager.lua"))()
--- loadstring(game:HttpGet(repo .. "ESPManager.lua"))()
+loadstring(game:HttpGet(repo .. "ESPManager.lua"))()
 
 local library = getgenv().Library
 local options = getgenv().Linoria.Options
@@ -48,7 +48,7 @@ local settings = {
 	Config = tabs.Settings:AddLeftGroupbox("Config")
 }
 
-player.Movement:AddSlider("Speed", {
+player.Movement:AddSlider("SpeedBoost", {
 		Text = "Speed Boost",
 		Default = 0,
 		Min = 0,
