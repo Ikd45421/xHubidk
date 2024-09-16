@@ -48,7 +48,7 @@ rooms.ChildAdded:Connect(function(child)
         library:Notify("Eyefestation spawned. Don't look at it!", 10)
     end
 
-    if toggles.TurretNotifier.Value and interactables:FindFirstChild("TurretSpawn") then
+    if toggles.TurretNotifier.Value and interactables:FindFirstChild("TurretControls") then
         library:Notify("Turret spawned. Be careful!", 10)
     end
 end)
