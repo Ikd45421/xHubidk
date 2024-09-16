@@ -6,6 +6,8 @@ local humanoid = character.Humanoid
 local options = getgenv().Linoria.Options
 
 humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+        if not getgenv().PressureHubLoaded then return end
+        
         local speedBoost = options[0].Value
 
         if speedBoost == 0 then return end
