@@ -20,74 +20,73 @@ local humanoid = character.Humanoid
 local camera = workspace.Camera
 
 local window = library:CreateWindow({
-		Title = "Pressure Hub - " .. plr.DisplayName,
-		Center = true,
-		AutoShow = true
-	}
-)
+    Title = "Pressure Hub - " .. plr.DisplayName,
+    Center = true,
+    AutoShow = true
+})
 
 local tabs = {
-	Player = window:AddTab("Player"),
-	Visual = window:AddTab("Visual"),
-	Settings = window:AddTab("Settings")
+    Player = window:AddTab("Player"),
+    Visual = window:AddTab("Visual"),
+    Settings = window:AddTab("Settings")
 }
 
 local player = {
-	Movement = tabs.Player:AddLeftGroupbox("Movement"),
-	Interaction = tabs.Player:AddRightGroupbox("Interaction")
+    Movement = tabs.Player:AddLeftGroupbox("Movement"),
+    Interaction = tabs.Player:AddRightGroupbox("Interaction")
 }
 
 local visual = {
-	Camera = tabs.Visual:AddLeftGroupbox("Camera"),
-	Lighting = tabs.Visual:AddRightGroupbox("Lighting")
+    Camera = tabs.Visual:AddLeftGroupbox("Camera"),
+    Lighting = tabs.Visual:AddRightGroupbox("Lighting")
 }
 
 local settings = {
-	Config = tabs.Settings:AddLeftGroupbox("Config")
+    Config = tabs.Settings:AddLeftGroupbox("Config")
 }
 
 player.Movement:AddSlider("SpeedBoost", {
-		Text = "Speed Boost",
-		Default = 0,
-		Min = 0,
-		Max = 30,
-		Rounding = 0,
-		Callback = function(value) humanoid.WalkSpeed = 16 + value end
-	}
-)
+    Text = "Speed Boost",
+    Default = 0,
+    Min = 0,
+    Max = 30,
+    Rounding = 0,
+    Callback = function(value) humanoid.WalkSpeed = 16 + value end
+})
 
 player.Interaction:AddToggle("InstantInteract", {
-		Text = "Instant Interact"
-	}
-)
+    Text = "Instant Interact"
+})
 
 visual.Camera:AddSlider("FieldOfView", {
-		Text = "Field Of View",
-		Default = 90,
-		Min = 30,
-		Max = 120,
-		Rounding = 0,
-		Callback = function(value) camera.FieldOfView = value end
-	}
-)
+    Text = "Field Of View",
+    Default = 90,
+    Min = 30,
+    Max = 120,
+    Rounding = 0,
+    Callback = function(value) camera.FieldOfView = value end
+})
 
 visual.Camera:AddDropdown("Tracers", {
-		Text = "Tracers",
-		Values = {"Items", "Doors", "Players", "Keycards", "Money"},
-		Multi = true,
-		AllowNull = true
-	}
-)
+    Text = "Tracers",
+    Values = { "Items", "Doors", "Players", "Keycards", "Money" },
+    Multi = true,
+    AllowNull = true
+})
 
 visual.Lighting:AddToggle("Fullbright", {
-		Text = "Fullbright",
-		Callback = function(value) if value then lighting.Ambient = Color3.fromRGB(255, 255, 255) else lighting.Ambient = Color3.fromRGB(40, 53, 65) end end
-	}
-)
+    Text = "Fullbright",
+    Callback = function(value)
+        if value then
+            lighting.Ambient = Color3.fromRGB(255, 255, 255)
+        else
+            lighting.Ambient = Color3.fromRGB(40, 53, 65)
+        end
+    end
+})
 
 settings.Config:AddButton("Unload", function()
-		lighting.Ambient = Color3.fromRGB(40, 53, 65)
+    lighting.Ambient = Color3.fromRGB(40, 53, 65)
 
-		library:Unload()
-	end
-)
+    library:Unload()
+end)
