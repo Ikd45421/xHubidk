@@ -17,14 +17,14 @@ workspace.ChildAdded:Connect(function(child)
     if toggles.NodeMonsterNotifier.Value then
         for _, monster in ipairs(nodeMonsters) do
             if child.Name == monster then
-                library:Notify(monster .. " spawned. Hide!")
+                library:Notify(monster .. " spawned. Hide!", 10)
             end
         end
     end
 
     if toggles.PandemoniumNotifier.Value then
         if child.Name == "Pandemonium" then
-            library:Notify("Pandemonium spawned. Good luck!")
+            library:Notify("Pandemonium spawned. Good luck!", 10)
         end
     end
 end)
