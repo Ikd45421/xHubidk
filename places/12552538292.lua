@@ -1,7 +1,7 @@
 local library = getgenv().Library
 
-if not getgenv().PressureHub.Loaded then
-    getgenv().PressureHub.Loaded = true
+if not getgenv().PressureHubLoaded then
+    getgenv().PressureHubLoaded = true
 else
     library:Notify("Already Loaded!")
     return

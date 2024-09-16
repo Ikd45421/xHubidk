@@ -1,7 +1,5 @@
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/xBackpack/PressureHub/main/main.lua"))()
 
-getgenv().PressureHub.Loaded = getgenv().PressureHub.Loaded or false
-
 local validPlaceIds = { 12552538292, }
 local foundGame = false
 
