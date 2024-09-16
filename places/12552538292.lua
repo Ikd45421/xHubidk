@@ -48,7 +48,7 @@ local settings = {
 	Config = tabs.Settings:AddLeftGroupbox("Config")
 }
 
-player.Movement:AddSlider(0, {
+player.Movement:AddSlider("Speed", {
 		Text = "Speed Boost",
 		Default = 0,
 		Min = 0,
@@ -58,12 +58,12 @@ player.Movement:AddSlider(0, {
 	}
 )
 
-player.Interaction:AddToggle(0, {
+player.Interaction:AddToggle("InstantInteract", {
 		Text = "Instant Interact"
 	}
 )
 
-visual.Camera:AddSlider(1, {
+visual.Camera:AddSlider("FieldOfView", {
 		Text = "Field Of View",
 		Default = 90,
 		Min = 30,
@@ -73,7 +73,7 @@ visual.Camera:AddSlider(1, {
 	}
 )
 
-visual.Camera:AddDropdown(2, {
+visual.Camera:AddDropdown("Tracers", {
 		Text = "Tracers",
 		Values = {"Items", "Doors", "Players", "Keycards", "Money"},
 		Multi = true,
@@ -81,15 +81,14 @@ visual.Camera:AddDropdown(2, {
 	}
 )
 
-visual.Lighting:AddToggle(1, {
+visual.Lighting:AddToggle("Fullbright", {
 		Text = "Fullbright",
 		Callback = function(value) lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end
 	}
 )
 	
 settings.Config:AddButton("Unload", function()
-		options[0]:SetValue(0)
-		options[1]:SetValue(70)
+		lighting.Ambient = Color3.fromRGB(40, 53, 65)
 		for _, toggle in next, Toggles do toggle:SetValue(false) end
 	
 		Library:Unload()
