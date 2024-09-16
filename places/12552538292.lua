@@ -38,6 +38,7 @@ local player = {
 
 local visual = {
     Camera = tabs.Visual:AddLeftGroupbox("Camera"),
+    Tracers = tabs.Visual:AddLeftGroupbox("Tracers"),
     Lighting = tabs.Visual:AddRightGroupbox("Lighting")
 }
 
@@ -67,11 +68,28 @@ visual.Camera:AddSlider("FieldOfView", {
     Callback = function(value) camera.FieldOfView = value end
 })
 
-visual.Camera:AddDropdown("Tracers", {
-    Text = "Tracers",
-    Values = { "Items", "Doors", "Players", "Keycards", "Money" },
-    Multi = true,
-    AllowNull = true
+visual.Tracers:AddToggle("ItemsTracer", {
+    Text = "Items"
+}):AddColorPicker("ItemsTracerColorPicker", {
+    Default = Color3.fromRGB(255, 0, 0) -- Red
+})
+
+visual.Tracers:AddToggle("KeycardsTracer", {
+    Text = "Keycards"
+}):AddColorPicker("KeycardsTracerColorPicker", {
+    Default = Color3.fromRGB(0, 0, 255) -- Aqua
+})
+
+visual.Tracers:AddToggle("MoneyTracer", {
+    Text = "Money"
+}):AddColorPicker("MoneyTracerColorPicker", {
+    Default = Color3.fromRGB(255, 255, 0) -- Yellow
+})
+
+visual.Tracers:AddToggle("PlayersTracer", {
+    Text = "Players"
+}):AddColorPicker("PlayersTracerColorPicker", {
+    Default = Color3.fromRGB(255, 255, 255) -- White
 })
 
 visual.Lighting:AddToggle("Fullbright", {
