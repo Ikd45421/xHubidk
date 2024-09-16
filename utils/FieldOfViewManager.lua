@@ -2,6 +2,8 @@ local workspace = game:GetService("Workspace")
 local camera = workspace.Camera
 
 camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
+        if not getgenv().PressureHubLoaded then script:Destroy()
+        
         local fov = options[1].Value
 
         if fov == 90 then return end
