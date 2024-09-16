@@ -1,3 +1,4 @@
+local workspace = game:GetService("Workspace")
 local rooms = workspace:WaitForChild("Rooms")
 local toggles = getgenv().Linoria.Toggles
 

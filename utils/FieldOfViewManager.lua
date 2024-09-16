@@ -1,6 +1,8 @@
 local workspace = game:GetService("Workspace")
 local camera = workspace.Camera
 
+local options = getgenv().Linoria.Options
+
 camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
         if not getgenv().PressureHubLoaded then return end
         

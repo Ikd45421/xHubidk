@@ -22,6 +22,6 @@ end
 
 if not foundGame then
   library:Notify("The place you are currently in is not valid. Please look at our github for a list of valid games!")
-  wait(5)
+  task.wait(5)
   library:Unload()
 end

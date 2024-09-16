@@ -12,17 +12,15 @@ loadstring(game:HttpGet(repo .. "FieldOfViewManager.lua"))()
 loadstring(game:HttpGet(repo .. "ESPManager.lua"))()
 
 local library = getgenv().Library
-local options = getgenv().Linoria.Options
-local toggles = getgenv().Linoria.Toggles
 
 -- HUB --
-local player = players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
+local plr = players.LocalPlayer
+local character = plr.Character or plr.CharacterAdded:Wait()
 local humanoid = character.Humanoid
 local camera = workspace.Camera
 
 local window = library:CreateWindow({
-		Title = "Pressure Hub - " .. player.DisplayName,
+		Title = "Pressure Hub - " .. plr.DisplayName,
 		Center = true,
 		AutoShow = true
 	}
@@ -68,7 +66,7 @@ visual.Camera:AddSlider("FieldOfView", {
 		Default = 90,
 		Min = 30,
 		Max = 120,
-		Rounding = 0, 
+		Rounding = 0,
 		Callback = function(value) camera.FieldOfView = value end
 	}
 )
@@ -83,14 +81,13 @@ visual.Camera:AddDropdown("Tracers", {
 
 visual.Lighting:AddToggle("Fullbright", {
 		Text = "Fullbright",
-		Callback = function(value) lighting.Ambient = if value then Color3.fromRGB(255, 255, 255) else Color3.fromRGB(40, 53, 65) end
+		Callback = function(value) if value then lighting.Ambient = Color3.fromRGB(255, 255, 255) else lighting.Ambient = Color3.fromRGB(40, 53, 65) end end
 	}
 )
-	
+
 settings.Config:AddButton("Unload", function()
 		lighting.Ambient = Color3.fromRGB(40, 53, 65)
-		for _, toggle in next, Toggles do toggle:SetValue(false) end
-	
-		Library:Unload()
+
+		library:Unload()
 	end
 )
