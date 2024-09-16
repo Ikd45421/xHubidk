@@ -20,7 +20,9 @@ for _, id in ipairs(validPlaceIds) do
     end
 end
 
-if not foundGame then
+if foundGame then
+    getgenv().PressureHubLoaded = true
+else
     library:Notify("The place you are currently in is not valid. Please look at our github for a list of valid games!")
     task.wait(5)
     library:Unload()

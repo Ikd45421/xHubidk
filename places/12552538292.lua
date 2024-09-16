@@ -105,6 +105,6 @@ visual.Lighting:AddToggle("Fullbright", {
 
 settings.Config:AddButton("Unload", function()
     lighting.Ambient = Color3.fromRGB(40, 53, 65)
-
+    getgenv().PressureHubLoaded = false
     library:Unload()
 end)
