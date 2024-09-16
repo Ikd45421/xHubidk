@@ -1,6 +1,9 @@
+local library = getgenv().Library
+
 if not getgenv().PressureHub.Loaded then
     getgenv().PressureHub.Loaded = true
 else
+    library:Notify("Already Loaded!")
     return
 end
 
@@ -16,9 +19,7 @@ loadstring(game:HttpGet(repo .. "InteractionManager.lua"))()
 loadstring(game:HttpGet(repo .. "MovementManager.lua"))()
 loadstring(game:HttpGet(repo .. "FieldOfViewManager.lua"))()
 loadstring(game:HttpGet(repo .. "NotifyManager.lua"))()
--- loadstring(game:HttpGet(repo .. "ESPManager.lua"))()
-
-local library = getgenv().Library
+-- loadstring(game:HttpGet(repo .. "ESPManager.lua"))(
 
 -- HUB --
 local plr = players.LocalPlayer
