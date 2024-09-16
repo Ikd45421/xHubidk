@@ -1,4 +1,6 @@
 local workspace = game:GetService("Workspace")
+local monsters = workspace:WaitForChild("Monsters")
+local rooms = workspace:WaitForChild("Rooms")
 
 local nodeMonsters = {
     "Angler",
@@ -22,9 +24,29 @@ workspace.ChildAdded:Connect(function(child)
         end
     end
 
-    if toggles.PandemoniumNotifier.Value then
-        if child.Name == "Pandemonium" then
-            library:Notify("Pandemonium spawned. Good luck!", 10)
-        end
+    if toggles.PandemoniumNotifier.Value and child.Name == "Pandemonium" then
+        library:Notify("Pandemonium spawned. Good luck!", 10)
+    end
+end)
+
+monsters.ChildAdded:Connect(function(child)
+    if not getgenv().PressureHubLoaded then return end
+
+    if toggles.WallDwellerNotifier.Value and child.Name == "WallDweller" then
+        library:Notify("Wall Dweller spawned. Remember to look behind you!", 10)
+    end
+end)
+
+rooms.ChildAdded:Connect(function(child)
+    if not getgenv().PressureHubLoaded then return end
+
+    local interactables = rooms:WaitForChild("Interactables")
+
+    if toggles.EyefestationNotifier.Value and interactables:FindFirstChild("EyefestationSpawn") then
+        library:Notify("Eyefestation spawned. Don't look at it!", 10)
+    end
+
+    if toggles.TurretNotifier.Value and interactables:FindFirstChild("TurretSpawn") then
+        library:Notify("Turret spawned. Be careful!", 10)
     end
 end)

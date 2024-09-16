@@ -131,6 +131,18 @@ local notifiers = {
 
     Pandemonium = entity.Notifiers:AddToggle("PandemoniumNotifier", {
         Text = "Pandemonium Notifier"
+    }),
+
+    WallDweller = entity.Notifiers:AddToggle("WallDwellerNotifier", {
+        Text = "Wall Dweller Notifier"
+    }),
+
+    Eyefestation = entity.Notifiers:AddToggle("EyefestationNotifier", {
+        Text = "Eyefestation Notifier"
+    }),
+
+    Turret = entity.Notifiers:AddToggle("TurretNotifier", {
+        Text = "Turret Notifier"
     })
 }
 
