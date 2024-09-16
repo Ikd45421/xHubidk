@@ -1,12 +1,12 @@
 local workspace = game:GetService("Workspace")
 local camera = workspace.Camera
 
-local toggles = getgenv().Linoria.Toggles
+local options = getgenv().Linoria.Options
 
 camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
     if not getgenv().PressureHubLoaded then return end
 
-    local fov = toggles.Fullbright.Value
+    local fov = options.FieldOfView.Value
 
     if fov == 90 then return end
     if camera.FieldOfView == fov then return end
