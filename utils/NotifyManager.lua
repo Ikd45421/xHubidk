@@ -40,7 +40,9 @@ end)
 rooms.ChildAdded:Connect(function(child)
     if not getgenv().PressureHubLoaded then return end
 
-    local interactables = rooms:WaitForChild("Interactables")
+    local interactables = child:FindFirstChild("Interactables")
+
+    if not interactables then return end
 
     if toggles.EyefestationNotifier.Value and interactables:FindFirstChild("EyefestationSpawn") then
         library:Notify("Eyefestation spawned. Don't look at it!", 10)
