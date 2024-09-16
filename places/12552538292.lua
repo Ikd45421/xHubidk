@@ -1,3 +1,9 @@
+if not getgenv().PressureHub.Loaded then
+    getgenv().PressureHub.Loaded = true
+else
+    return
+end
+
 -- SERVICES --
 local workspace = game:GetService("Workspace")
 local lighting = game:GetService("Lighting")
@@ -9,6 +15,7 @@ local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils
 loadstring(game:HttpGet(repo .. "InteractionManager.lua"))()
 loadstring(game:HttpGet(repo .. "MovementManager.lua"))()
 loadstring(game:HttpGet(repo .. "FieldOfViewManager.lua"))()
+loadstring(game:HttpGet(repo .. "NotifyManager.lua"))()
 -- loadstring(game:HttpGet(repo .. "ESPManager.lua"))()
 
 local library = getgenv().Library
@@ -28,6 +35,7 @@ local window = library:CreateWindow({
 local tabs = {
     Player = window:AddTab("Player"),
     Visual = window:AddTab("Visual"),
+    Entity = window:AddTab("Entity"),
     Settings = window:AddTab("Settings")
 }
 
@@ -40,6 +48,10 @@ local visual = {
     Camera = tabs.Visual:AddLeftGroupbox("Camera"),
     Tracers = tabs.Visual:AddLeftGroupbox("Tracers"),
     Lighting = tabs.Visual:AddRightGroupbox("Lighting")
+}
+
+local entity = {
+    Notifiers = tabs.Entity:AddLeftGroupbox("Notifiers")
 }
 
 local settings = {
@@ -68,29 +80,37 @@ visual.Camera:AddSlider("FieldOfView", {
     Callback = function(value) camera.FieldOfView = value end
 })
 
-visual.Tracers:AddToggle("ItemsTracer", {
-    Text = "Items"
-}):AddColorPicker("ItemsTracerColorPicker", {
-    Default = Color3.fromRGB(255, 0, 0) -- Red
-})
+local tracers = {
+    Items = visual.Tracers:AddToggle("ItemsTracer", {
+        Text = "Items"
+    }):AddColorPicker("ItemsTracerColorPicker", {
+        Default = Color3.fromRGB(0, 255, 0) -- Green
+    }),
 
-visual.Tracers:AddToggle("KeycardsTracer", {
-    Text = "Keycards"
-}):AddColorPicker("KeycardsTracerColorPicker", {
-    Default = Color3.fromRGB(0, 0, 255) -- Aqua
-})
+    Keycards = visual.Tracers:AddToggle("KeycardsTracer", {
+        Text = "Keycards"
+    }):AddColorPicker("KeycardsTracerColorPicker", {
+        Default = Color3.fromRGB(0, 0, 255) -- Aqua
+    }),
 
-visual.Tracers:AddToggle("MoneyTracer", {
-    Text = "Money"
-}):AddColorPicker("MoneyTracerColorPicker", {
-    Default = Color3.fromRGB(255, 255, 0) -- Yellow
-})
+    Money = visual.Tracers:AddToggle("MoneyTracer", {
+        Text = "Money"
+    }):AddColorPicker("MoneyTracerColorPicker", {
+        Default = Color3.fromRGB(255, 255, 0) -- Yellow
+    }),
 
-visual.Tracers:AddToggle("PlayersTracer", {
-    Text = "Players"
-}):AddColorPicker("PlayersTracerColorPicker", {
-    Default = Color3.fromRGB(255, 255, 255) -- White
-})
+    Players = visual.Tracers:AddToggle("PlayersTracer", {
+        Text = "Players"
+    }):AddColorPicker("PlayersTracerColorPicker", {
+        Default = Color3.fromRGB(255, 255, 255) -- White
+    }),
+
+    Monsters = visual.Tracers:AddToggle("MonstersTracer", {
+        Text = "Monsters"
+    }):AddColorPicker("MonstersTracerColorPicker", {
+        Default = Color3.fromRGB(255, 0, 0) -- Red
+    })
+}
 
 visual.Lighting:AddToggle("Fullbright", {
     Text = "Fullbright",
@@ -102,6 +122,16 @@ visual.Lighting:AddToggle("Fullbright", {
         end
     end
 })
+
+local notifiers = {
+    NodeMonsters = entity.Notifiers:AddToggle("NodeMonsterNotifier", {
+        Text = "Node Monster Notifier"
+    }),
+
+    Pandemonium = entity.Notifiers:AddToggle("PandemoniumNotifier", {
+        Text = "Pandemonium Notifier"
+    })
+}
 
 settings.Config:AddButton("Unload", function()
     lighting.Ambient = Color3.fromRGB(40, 53, 65)
