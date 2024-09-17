@@ -194,11 +194,7 @@ workspace.ChildAdded:Connect(function(child)
     if toggles.NodeMonsterNotifier.Value then
         for _, monster in ipairs(nodeMonsters) do
             if child.Name == monster then
-                local str = monster
-                if (string.match(monster, "Ridge")) then
-                    str = string.sub(monster, 6)
-                end
-                getgenv():Alert(str .. " spawned. Hide!", 10)
+                getgenv():Alert(string.gsub(monster, "Ridge", "") .. " spawned. Hide!", 10)
             end
         end
     end
@@ -229,8 +225,18 @@ workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
 
     local interactables = room:WaitForChild("Interactables")
 
-    if (interactables:FindFirstChild("EyefestationSpawn")) then
-        getgenv():Alert("Eyefestation will spawn in the next room. Be careful!", 10)
+    if toggles.EyefestationNotifier.Value then
+        if interactables:FindFirstChild("EyefestationSpawn") then
+            getgenv():Alert("Eyefestation will spawn in the next room. Careful!", 5)
+        end
+
+        interactables.ChildAdded:Connect(function(child)
+            if child.Name == "EyefestationSpawn" then
+                getgenv():Alert("Eyefestation will spawn in the next room. Careful!", 5)
+            elseif child.Name == "Eyefestation" then
+                getgenv():Alert("Eyefestation has spawned. Don't look at it!", 10)
+            end
+        end)
     end
 end)
 

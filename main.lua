@@ -14,13 +14,8 @@ local library = getgenv().Library
 local toggles = getgenv().Linoria.Toggles
 local workspace = game:GetService("Workspace")
 
-local alertSound = Instance.new("Sound")
-alertSound.SoundId = "rbxassetid://4590662766"
-alertSound.Volume = 2
-alertSound.PlayOnRemove = true
-
 getgenv().Alert = function(message, duration)
-    library:Notify(message, duration, "rbxassetid://4590662766")
+    library:Notify(message, duration, "4590662766")
 end
 
 local placesRepo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/places/"
