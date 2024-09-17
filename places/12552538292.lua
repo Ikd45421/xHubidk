@@ -36,6 +36,8 @@ local nodeMonsters = {
 }
 
 -- HUB --
+getgenv().CurrentRoom = repStorage.Events.CurrentRoomNumber:InvokeServer()
+
 local window = library:CreateWindow({
     Title = "Pressure Hub",
     Center = true,
@@ -96,7 +98,7 @@ main.Sound:AddToggle("NoAmbience", {
 task.spawn(function()
     while task.wait() do
         if workspace:FindFirstChild("AmbiencePart") then
-            if not toggles.NoAmbience.Value then return end
+            if not toggles.NoAmbience.Value then break end
 
             local sound = workspace.AmbiencePart:FindFirstChildWhichIsA("Sound")
 
@@ -221,7 +223,7 @@ end)
 workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
     if not getgenv().pressurehub_loaded then return end
 
-    if toggles.DangerousRoomNotifier.Value and string.match(room.Name, "RoundaboutDestroyed1") then
+    if room:FindFirstChild("DamagePart") then
         getgenv().Alert("The next room is dangerous. Be careful!")
     end
 
