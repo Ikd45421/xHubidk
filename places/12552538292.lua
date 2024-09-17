@@ -96,9 +96,11 @@ main.Sound:AddToggle("NoAmbience", {
 })
 
 task.spawn(function()
-    loaded.Changed:Wait()
+    while task.wait() do
+        if workspace:FindFirstChild("AmbiencePart") then break end
+    end
 
-    workspace:WaitForChild("AmbiencePart").ChildAdded:Connect(function(sound)
+    workspace.AmbiencePart.ChildAdded:Connect(function(sound)
         if toggles.NoAmbience.Value then
             sound.Volume = 0
         end
