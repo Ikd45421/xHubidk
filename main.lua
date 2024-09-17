@@ -11,10 +11,8 @@ loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
 loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 
 local library = getgenv().Library
-local toggles = getgenv().Linoria.Toggles
-local workspace = game:GetService("Workspace")
 
-function getgenv:Alert(message, duration)
+getgenv().Alert = function(message, duration)
     library:Notify(message, duration, "4590662766")
 end
 
@@ -29,7 +27,7 @@ for _, id in ipairs(validPlaceIds) do
 end
 
 if not foundGame then
-    getgenv():Alert("The place you are currently in is not valid. Please look at our github for a list of valid games!")
+    getgenv().Alert("The place you are currently in is not valid. Please look at our github for a list of valid games!")
     task.wait(5)
     library:Unload()
 end
