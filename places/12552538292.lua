@@ -47,6 +47,7 @@ local tabs = {
     Main = window:AddTab("Main"),
     Visual = window:AddTab("Visual"),
     Entity = window:AddTab("Entity"),
+    Notifiers = window:AddTab("Notifiers"),
     Tracers = window:AddTab("Tracers"),
     Settings = window:AddTab("Settings")
 }
@@ -143,33 +144,37 @@ visual.Lighting:AddToggle("Fullbright", {
 ------------------------------------------------
 
 
-local entity = {
-    Notifiers = tabs.Entity:AddLeftGroupbox("Notifiers")
+local notifiers = {
+    Entity = tabs.Notifiers:AddLeftGroupbox("Entity"),
+    Rooms = tabs.Notifiers:AddRightGroupbox("Rooms"),
+    Settings = tabs.Notifiers:AddLeftGroupbox("Settings")
 }
 
-entity.Notifiers:AddToggle("NodeMonsterNotifier", {
+notifiers.Entity:AddToggle("NodeMonsterNotifier", {
     Text = "Node Monster Notifier"
 })
 
-entity.Notifiers:AddToggle("PandemoniumNotifier", {
+notifiers.Entity:AddToggle("PandemoniumNotifier", {
     Text = "Pandemonium Notifier"
 })
 
-entity.Notifiers:AddToggle("WallDwellerNotifier", {
+notifiers.Entity:AddToggle("WallDwellerNotifier", {
     Text = "Wall Dweller Notifier"
 })
 
-entity.Notifiers:AddToggle("EyefestationNotifier", {
+notifiers.Entity:AddToggle("EyefestationNotifier", {
     Text = "Eyefestation Notifier"
 })
 
-entity.Notifiers:AddToggle("TurretNotifier", {
+notifiers.Entity:AddToggle("TurretNotifier", {
     Text = "Turret Notifier"
 })
 
-entity.Notifiers:AddDivider()
+notifiers.Rooms:AddToggle("DangerousRoomNotifier", {
+    Text = "Dangerous Room Notifier"
+})
 
-entity.Notifiers:AddToggle("NotifySound", {
+notifiers.Settings:AddToggle("NotifySound", {
     Text = "Notify Sound"
 })
 
@@ -199,21 +204,25 @@ workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
     if not getgenv().pressurehub_loaded then return end
 
     if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
-        getgenv():Alert("A Wall Dweller has spawned somewhere in the room's walls. Find it!", 10)
+        getgenv():Alert("A Wall Dweller has spawned somewhere in the walls. Find it!", 10)
     end
 end)
 
 workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
     if not getgenv().pressurehub_loaded then return end
 
+    if toggles.DangerousRoomNotifier.Value and string.match(room.Name, "RoundaboutDestroyed") then
+        getgenv():Alert("The next room has a big hole in the middle. Be careful!", 10)
+    end
+
     if toggles.TurretNotifier.Value and string.match(room.Name, "Turret") then
-        getgenv():Alert("Turrets will spawn in the next room. Be Careful!", 10)
+        getgenv():Alert("Turrets will spawn in the next room. Be careful!", 10)
     end
 
     local interactables = room:WaitForChild("Interactables")
 
     if (interactables:FindFirstChild("EyefestationSpawn")) then
-        getgenv():Alert("Eyefestation will spawn in the next room. Be Careful!")
+        getgenv():Alert("Eyefestation will spawn in the next room. Be careful!")
     end
 end)
 
