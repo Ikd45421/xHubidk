@@ -16,13 +16,15 @@ Done!
 
 - Auto Interact
 - ESP for doors, documents, entities, items, keycards, lockers, and more!
-- Entity Notifier
+- Transparent Closets
+- Auto complete bossfights
 - Auto revive
 - Unredact all documents
 - Fly
 - Noclip
 - Godmode
+- Much, much more! (Due to Pressure's lack of an anticheat)
 
 ## Credits
 
-This is a solo project made only by xBackpack
+This is a solo project made by xBackpack
