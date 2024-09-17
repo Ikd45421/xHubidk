@@ -222,44 +222,48 @@ end)
 
 
 local tracers = {
-    Player = tabs.Tracers:AddLeftGroupbox("Players"),
-    NodeMonsters = tabs.Tracers:AddRightGroupbox("Node Monsters"),
+    Items = tabs.Tracers:AddRightGroupbox("Items"),
+    Entities = tabs.Tracers:AddLeftGroupbox("Entities"),
+    Other = tabs.Tracers:AddLeftGroupbox("Other")
 }
 
-visual.Tracers:AddToggle("ItemsTracer", {
+tracers.Items:AddToggle("ItemsTracer", {
     Text = "Items"
-}):AddColorPicker("ItemsTracerColorPicker", {
-    Default = Color3.fromRGB(0, 255, 0) -- Green
 })
 
-visual.Tracers:AddToggle("KeycardsTracer", {
+tracers.Items:AddToggle("KeycardsTracer", {
     Text = "Keycards"
-}):AddColorPicker("KeycardsTracerColorPicker", {
-    Default = Color3.fromRGB(0, 0, 255) -- Aqua
 })
 
-visual.Tracers:AddToggle("MoneyTracer", {
+tracers.Items:AddToggle("MoneyTracer", {
     Text = "Money"
-}):AddColorPicker("MoneyTracerColorPicker", {
-    Default = Color3.fromRGB(255, 255, 0) -- Yellow
 })
-
-visual.Tracers:AddToggle("PlayersTracer", {
+tracers.Entities:AddToggle("PlayersTracer", {
     Text = "Players"
-}):AddColorPicker("PlayersTracerColorPicker", {
-    Default = Color3.fromRGB(255, 255, 255) -- White
 })
 
-visual.Tracers:AddToggle("MonstersTracer", {
-    Text = "Monsters"
-}):AddColorPicker("MonstersTracerColorPicker", {
-    Default = Color3.fromRGB(255, 0, 0) -- Red
+tracers.Entities:AddToggle("NodeMonstersTracer", {
+    Text = "Node Monsters"
 })
 
-visual.Tracers:AddToggle("GeneratorsTracer", {
+tracers.Entities:AddToggle("PandemoniumNotifier", {
+    Text = "Pandemonium"
+})
+
+tracers.Entities:AddToggle("WallDwellerNotifier", {
+    Text = "Wall Dwellers"
+})
+
+tracers.Entities:AddToggle("EyefestationNotifier", {
+    Text = "Eyefestation"
+})
+
+tracers.Entities:AddToggle("TurretNotifier", {
+    Text = "Turrets"
+})
+
+tracers.Other:AddToggle("GeneratorsTracer", {
     Text = "Generators"
-}):AddColorPicker("GeneratorsTracerColorPicker", {
-    Default = Color3.fromRGB(255, 127, 0) -- Orange
 })
 
 
@@ -267,10 +271,30 @@ visual.Tracers:AddToggle("GeneratorsTracer", {
 
 
 local settings = {
-    Config = tabs.Settings:AddLeftGroupbox("Config")
+    Config = tabs.Settings:AddLeftGroupbox("Config"),
+    Credits = tabs.Settings:AddRightGroupbox("Credits")
 }
 
+settings.Config:AddToggle("KeybindMenu", {
+    Text = "Open Keybind Menu",
+    Callback = function(value) library.KeybindFrame.Visible = value end
+})
+
+settings.Config:AddToggle("CustomCursor", {
+    Text = "Show Custom Cursor",
+    Callback = function(value) library.ShowCustomCursor = value end
+})
+
+settings.Config:AddDivider()
+
+settings.Config:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
+    Text = "Menu Keybind",
+    Default = "RightShift"
+})
+
 settings.Config:AddButton("Unload", library.Unload)
+
+settings.Credits:AddLabel("xBackpack - Creator & Scripter")
 
 library:OnUnload(function()
     lighting.Ambient = Color3.fromRGB(40, 53, 65)
