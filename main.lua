@@ -11,9 +11,10 @@ loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
 loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 
 local library = getgenv().Library
+local toggles = getgenv().Linoria.Toggles
 
 getgenv().Alert = function(message)
-    library:Notify(message, 5, "4590662766")
+    library:Notify(message, 5, "rbxassetid://4590662766")
 end
 
 local placesRepo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/places/"

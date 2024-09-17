@@ -14,8 +14,6 @@ local players = game:GetService("Players")
 local repStorage = game:GetService("ReplicatedStorage")
 local proximityPromptService = game:GetService("ProximityPromptService")
 
-local loaded = repStorage:WaitForChild("Loaded")
-
 local options = getgenv().Linoria.Options
 local toggles = getgenv().Linoria.Toggles
 
@@ -164,8 +162,8 @@ visual.Lighting:AddToggle("Fullbright", {
 
 local notifiers = {
     Entity = tabs.Notifiers:AddLeftGroupbox("Entity"),
-    Rooms = tabs.Notifiers:AddRightGroupbox("Rooms"),
-    Settings = tabs.Notifiers:AddLeftGroupbox("Settings")
+    Rooms = tabs.Notifiers:AddRightGroupbox("Rooms")
+    -- Settings = tabs.Notifiers:AddLeftGroupbox("Settings")
 }
 
 notifiers.Entity:AddToggle("NodeMonsterNotifier", {
@@ -184,16 +182,12 @@ notifiers.Entity:AddToggle("EyefestationNotifier", {
     Text = "Eyefestation Notifier"
 })
 
-notifiers.Entity:AddToggle("TurretNotifier", {
+notifiers.Rooms:AddToggle("TurretNotifier", {
     Text = "Turret Notifier"
 })
 
 notifiers.Rooms:AddToggle("DangerousRoomNotifier", {
     Text = "Dangerous Room Notifier"
-})
-
-notifiers.Settings:AddToggle("NotifySound", {
-    Text = "Notify Sound"
 })
 
 workspace.ChildAdded:Connect(function(child)
@@ -237,14 +231,8 @@ workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
 
     local interactables = room:WaitForChild("Interactables")
 
-    for _, child in pairs(interactables:GetChildren()) do
-        if child.Name == "EyefestationSpawn" then
-            getgenv().Alert("EyefestationSpawn")
-        end
-    end
-
     if toggles.EyefestationNotifier.Value then
-        if interactables:FindFirstChild("EyefestationSpawn") then
+        if interactables:WaitForChild("EyefestationSpawn", 5) then
             getgenv().Alert("Eyefestation will spawn in the next room. Careful!")
         end
 
@@ -270,6 +258,10 @@ tracers.Items:AddToggle("ItemsTracer", {
     Text = "Items"
 })
 
+tracers.Items:AddToggle("DocumentsTracers", {
+    Text = "Documents"
+})
+
 tracers.Items:AddToggle("KeycardsTracer", {
     Text = "Keycards"
 })
@@ -277,6 +269,7 @@ tracers.Items:AddToggle("KeycardsTracer", {
 tracers.Items:AddToggle("MoneyTracer", {
     Text = "Money"
 })
+
 tracers.Entities:AddToggle("PlayersTracer", {
     Text = "Players"
 })
