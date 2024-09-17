@@ -2,7 +2,11 @@ local workspace = game:GetService("Workspace")
 local rooms = workspace:WaitForChild("Rooms")
 local toggles = getgenv().Linoria.Toggles
 
-local activeESPs = {}
+local activeESPs = {
+    Rooms = {},
+    Monsters = {},
+    Players = {}
+}
 
 local function createOutline(roomName, part)
     local highlight = Instance.new("Highlight")
@@ -15,7 +19,7 @@ local function createOutline(roomName, part)
 
     print("Made an outline!")
 
-    table.insert(activeESPs[roomName], highlight)
+    table.insert(activeESPs.Rooms[roomName], highlight)
 end
 
 rooms.ChildAdded:Connect(function(child)

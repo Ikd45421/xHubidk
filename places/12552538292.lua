@@ -1,9 +1,9 @@
 local library = getgenv().Library
 
-if not getgenv().PressureHubLoaded then
-    getgenv().PressureHubLoaded = true
+if not getgenv().pressurehub_loaded then
+    getgenv().pressurehub_loaded = true
 else
-    library:Notify("Already Loaded!")
+    Alert("Already Loaded!")
     return
 end
 
@@ -15,6 +15,7 @@ local players = game:GetService("Players")
 -- LIBRARIES --
 local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils/"
 
+loadstring(game:HttpGet(repo .. "Functions.lua"))()
 loadstring(game:HttpGet(repo .. "InteractionManager.lua"))()
 loadstring(game:HttpGet(repo .. "MovementManager.lua"))()
 loadstring(game:HttpGet(repo .. "FieldOfViewManager.lua"))()
@@ -110,6 +111,12 @@ local tracers = {
         Text = "Monsters"
     }):AddColorPicker("MonstersTracerColorPicker", {
         Default = Color3.fromRGB(255, 0, 0) -- Red
+    }),
+
+    Generators = visual.Tracers:AddToggle("GeneratorsTracer", {
+        Text = "Generators"
+    }):AddColorPicker("GeneratorsTracerColorPicker", {
+        Default = Color3.fromRGB(255, 127, 0) -- Orange
     })
 }
 
@@ -146,8 +153,14 @@ local notifiers = {
     })
 }
 
-settings.Config:AddButton("Unload", function()
+entity.Notifiers:AddToggle("NotifySound", {
+    Text = "Notify Sound"
+})
+
+settings.Config:AddButton("Unload", library.Unload)
+
+library:OnUnload(function()
     lighting.Ambient = Color3.fromRGB(40, 53, 65)
-    getgenv().PressureHubLoaded = false
-    library:Unload()
+    getgenv().pressurehub_loaded = false
+    print("Goodbye!")
 end)
