@@ -282,6 +282,7 @@ settings.Config:AddToggle("KeybindMenu", {
 
 settings.Config:AddToggle("CustomCursor", {
     Text = "Show Custom Cursor",
+    Default = true,
     Callback = function(value) library.ShowCustomCursor = value end
 })
 
