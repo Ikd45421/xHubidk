@@ -20,14 +20,7 @@ alertSound.Volume = 2
 alertSound.PlayOnRemove = true
 
 getgenv().Alert = function(message, duration)
-    library:Notify(message, duration)
-
-    if toggles.NotifySound.Value then
-        local sound = alertSound:Clone()
-
-        sound.Parent = workspace
-        sound:Destroy()
-    end
+    library:Notify(message, duration, "rbxassetid://4590662766")
 end
 
 local placesRepo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/places/"
