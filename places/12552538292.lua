@@ -11,67 +11,102 @@ end
 local workspace = game:GetService("Workspace")
 local lighting = game:GetService("Lighting")
 local players = game:GetService("Players")
+local proximityPromptService = game:GetService("ProximityPromptService")
 
--- LIBRARIES --
-local repo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/utils/"
+local options = getgenv().Linoria.Options
+local toggles = getgenv().Linoria.Toggles
 
-loadstring(game:HttpGet(repo .. "Functions.lua"))()
-loadstring(game:HttpGet(repo .. "InteractionManager.lua"))()
-loadstring(game:HttpGet(repo .. "MovementManager.lua"))()
-loadstring(game:HttpGet(repo .. "FieldOfViewManager.lua"))()
-loadstring(game:HttpGet(repo .. "NotifyManager.lua"))()
--- loadstring(game:HttpGet(repo .. "ESPManager.lua"))(
-
--- HUB --
-local plr = players.LocalPlayer
-local character = plr.Character or plr.CharacterAdded:Wait()
+local player = players.LocalPlayer
+local playerFolder = player:WaitForChild("PlayerFolder")
+local doorsOpened = playerFolder:WaitForChild("DoorsOpened")
+local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character.Humanoid
 local camera = workspace.Camera
 
+local nodeMonsters = {
+    "Angler",
+    "Froger",
+    "Pinkie",
+    "Chainsmoker",
+    "Blitz",
+    "RidgeAngler",
+    "RidgeFroger",
+    "RidgePinkie",
+    "RidgeChainsmoker",
+    "RidgeBlitz"
+}
+
+-- HUB --
 local window = library:CreateWindow({
-    Title = "Pressure Hub - " .. plr.DisplayName,
+    Title = "Pressure Hub",
     Center = true,
     AutoShow = true
 })
 
 local tabs = {
-    Player = window:AddTab("Player"),
+    Main = window:AddTab("Main"),
     Visual = window:AddTab("Visual"),
     Entity = window:AddTab("Entity"),
+    Tracers = window:AddTab("Tracers"),
     Settings = window:AddTab("Settings")
 }
 
-local player = {
-    Movement = tabs.Player:AddLeftGroupbox("Movement"),
-    Interaction = tabs.Player:AddRightGroupbox("Interaction")
+local main = {
+    Movement = tabs.Main:AddLeftGroupbox("Movement"),
+    Interaction = tabs.Main:AddRightGroupbox("Interaction"),
+    Sound = tabs.Main:AddLeftGroupbox("Sound")
 }
 
-local visual = {
-    Camera = tabs.Visual:AddLeftGroupbox("Camera"),
-    Tracers = tabs.Visual:AddLeftGroupbox("Tracers"),
-    Lighting = tabs.Visual:AddRightGroupbox("Lighting")
-}
-
-local entity = {
-    Notifiers = tabs.Entity:AddLeftGroupbox("Notifiers")
-}
-
-local settings = {
-    Config = tabs.Settings:AddLeftGroupbox("Config")
-}
-
-player.Movement:AddSlider("SpeedBoost", {
+main.Movement:AddSlider("SpeedBoost", {
     Text = "Speed Boost",
     Default = 0,
     Min = 0,
-    Max = 30,
+    Max = 45,
     Rounding = 0,
     Callback = function(value) humanoid.WalkSpeed = 16 + value end
 })
 
-player.Interaction:AddToggle("InstantInteract", {
+humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+    if not getgenv().PressureHubLoaded then return end
+
+    local speedBoost = options.SpeedBoost.Value
+
+    if speedBoost == 0 or humanoid.WalkSpeed == 0 then return end
+    if humanoid.WalkSpeed == 16 + speedBoost then return end
+
+    humanoid.WalkSpeed = 16 + speedBoost
+end)
+
+main.Interaction:AddToggle("InstantInteract", {
     Text = "Instant Interact"
 })
+
+proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
+    if not getgenv().PressureHubLoaded then return end
+
+    if not toggles.InstantInteract.Value then return end
+
+    fireproximityprompt(prompt)
+end)
+
+main.Sound:AddToggle("NoAmbience", {
+    Text = "No Ambience"
+})
+
+workspace:WaitForChild("AmbiencePart").ChildAdded:Connect(function(sound)
+    if toggles.NoAmbience.Value then
+        sound.Volume = 0
+    end
+end)
+
+
+------------------------------------------------
+
+
+local visual = {
+    Camera = tabs.Visual:AddLeftGroupbox("Camera"),
+    Lighting = tabs.Visual:AddRightGroupbox("Lighting")
+}
 
 visual.Camera:AddSlider("FieldOfView", {
     Text = "Field Of View",
@@ -82,43 +117,16 @@ visual.Camera:AddSlider("FieldOfView", {
     Callback = function(value) camera.FieldOfView = value end
 })
 
-local tracers = {
-    Items = visual.Tracers:AddToggle("ItemsTracer", {
-        Text = "Items"
-    }):AddColorPicker("ItemsTracerColorPicker", {
-        Default = Color3.fromRGB(0, 255, 0) -- Green
-    }),
+camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
+    if not getgenv().PressureHubLoaded then return end
 
-    Keycards = visual.Tracers:AddToggle("KeycardsTracer", {
-        Text = "Keycards"
-    }):AddColorPicker("KeycardsTracerColorPicker", {
-        Default = Color3.fromRGB(0, 0, 255) -- Aqua
-    }),
+    local fov = options.FieldOfView.Value
 
-    Money = visual.Tracers:AddToggle("MoneyTracer", {
-        Text = "Money"
-    }):AddColorPicker("MoneyTracerColorPicker", {
-        Default = Color3.fromRGB(255, 255, 0) -- Yellow
-    }),
+    if fov == 90 then return end
+    if camera.FieldOfView == fov then return end
 
-    Players = visual.Tracers:AddToggle("PlayersTracer", {
-        Text = "Players"
-    }):AddColorPicker("PlayersTracerColorPicker", {
-        Default = Color3.fromRGB(255, 255, 255) -- White
-    }),
-
-    Monsters = visual.Tracers:AddToggle("MonstersTracer", {
-        Text = "Monsters"
-    }):AddColorPicker("MonstersTracerColorPicker", {
-        Default = Color3.fromRGB(255, 0, 0) -- Red
-    }),
-
-    Generators = visual.Tracers:AddToggle("GeneratorsTracer", {
-        Text = "Generators"
-    }):AddColorPicker("GeneratorsTracerColorPicker", {
-        Default = Color3.fromRGB(255, 127, 0) -- Orange
-    })
-}
+    camera.FieldOfView = fov
+end)
 
 visual.Lighting:AddToggle("Fullbright", {
     Text = "Fullbright",
@@ -131,36 +139,142 @@ visual.Lighting:AddToggle("Fullbright", {
     end
 })
 
-local notifiers = {
-    NodeMonsters = entity.Notifiers:AddToggle("NodeMonsterNotifier", {
-        Text = "Node Monster Notifier"
-    }),
 
-    Pandemonium = entity.Notifiers:AddToggle("PandemoniumNotifier", {
-        Text = "Pandemonium Notifier"
-    }),
+------------------------------------------------
 
-    WallDweller = entity.Notifiers:AddToggle("WallDwellerNotifier", {
-        Text = "Wall Dweller Notifier"
-    }),
 
-    Eyefestation = entity.Notifiers:AddToggle("EyefestationNotifier", {
-        Text = "Eyefestation Notifier"
-    }),
-
-    Turret = entity.Notifiers:AddToggle("TurretNotifier", {
-        Text = "Turret Notifier"
-    })
+local entity = {
+    Notifiers = tabs.Entity:AddLeftGroupbox("Notifiers")
 }
+
+entity.Notifiers:AddToggle("NodeMonsterNotifier", {
+    Text = "Node Monster Notifier"
+})
+
+entity.Notifiers:AddToggle("PandemoniumNotifier", {
+    Text = "Pandemonium Notifier"
+})
+
+entity.Notifiers:AddToggle("WallDwellerNotifier", {
+    Text = "Wall Dweller Notifier"
+})
+
+entity.Notifiers:AddToggle("EyefestationNotifier", {
+    Text = "Eyefestation Notifier"
+})
+
+entity.Notifiers:AddToggle("TurretNotifier", {
+    Text = "Turret Notifier"
+})
+
+entity.Notifiers:AddDivider()
 
 entity.Notifiers:AddToggle("NotifySound", {
     Text = "Notify Sound"
 })
+
+workspace.ChildAdded:Connect(function(child)
+    if not getgenv().PressureHubLoaded then return end
+
+    if doorsOpened.Value == 100 then return end
+
+    if toggles.NodeMonsterNotifier.Value then
+        for _, monster in ipairs(nodeMonsters) do
+            if child.Name == monster then
+                local str = monster
+                if (string.match(monster, "Ridge")) then
+                    str = string.sub(monster, 6)
+                end
+                getgenv():Alert(str .. " spawned. Hide!", 10)
+            end
+        end
+    end
+
+    if toggles.PandemoniumNotifier.Value and child.Name == "Pandemonium" then
+        getgenv():Alert("Pandemonium spawned. Good luck!", 10)
+    end
+end)
+
+workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
+    if not getgenv().PressureHubLoaded then return end
+
+    if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
+        getgenv():Alert("A Wall Dweller has spawned somewhere in the room's walls. Find it!", 10)
+    end
+end)
+
+workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
+    if not getgenv().PressureHubLoaded then return end
+
+    if toggles.TurretNotifier.Value and string.match(room.Name, "Turret") then
+        getgenv():Alert("Turrets will spawn in the next room. Be Careful!", 10)
+    end
+
+    local interactables = room:WaitForChild("Interactables")
+
+    if (interactables:FindFirstChild("EyefestationSpawn")) then
+        getgenv():Alert("Eyefestation will spawn in the next room. Be Careful!")
+    end
+end)
+
+
+------------------------------------------------
+
+
+local tracers = {
+    Player = tabs.Tracers:AddLeftGroupbox("Players"),
+    NodeMonsters = tabs.Tracers:AddRightGroupbox("Node Monsters"),
+}
+
+visual.Tracers:AddToggle("ItemsTracer", {
+    Text = "Items"
+}):AddColorPicker("ItemsTracerColorPicker", {
+    Default = Color3.fromRGB(0, 255, 0) -- Green
+})
+
+visual.Tracers:AddToggle("KeycardsTracer", {
+    Text = "Keycards"
+}):AddColorPicker("KeycardsTracerColorPicker", {
+    Default = Color3.fromRGB(0, 0, 255) -- Aqua
+})
+
+visual.Tracers:AddToggle("MoneyTracer", {
+    Text = "Money"
+}):AddColorPicker("MoneyTracerColorPicker", {
+    Default = Color3.fromRGB(255, 255, 0) -- Yellow
+})
+
+visual.Tracers:AddToggle("PlayersTracer", {
+    Text = "Players"
+}):AddColorPicker("PlayersTracerColorPicker", {
+    Default = Color3.fromRGB(255, 255, 255) -- White
+})
+
+visual.Tracers:AddToggle("MonstersTracer", {
+    Text = "Monsters"
+}):AddColorPicker("MonstersTracerColorPicker", {
+    Default = Color3.fromRGB(255, 0, 0) -- Red
+})
+
+visual.Tracers:AddToggle("GeneratorsTracer", {
+    Text = "Generators"
+}):AddColorPicker("GeneratorsTracerColorPicker", {
+    Default = Color3.fromRGB(255, 127, 0) -- Orange
+})
+
+
+------------------------------------------------
+
+
+local settings = {
+    Config = tabs.Settings:AddLeftGroupbox("Config")
+}
 
 settings.Config:AddButton("Unload", library.Unload)
 
 library:OnUnload(function()
     lighting.Ambient = Color3.fromRGB(40, 53, 65)
     getgenv().pressurehub_loaded = false
-    Alert("Unloaded!")
+    getgenv().Alert("Unloaded!")
+    task.wait(1)
 end)
