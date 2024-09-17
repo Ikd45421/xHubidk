@@ -97,7 +97,17 @@ main.Sound:AddToggle("NoAmbience", {
 
 task.spawn(function()
     while task.wait() do
-        if workspace:FindFirstChild("AmbiencePart") then break end
+        if workspace:FindFirstChild("AmbiencePart") then
+            if not toggles.NoAmbience.Value then return end
+
+            local sound = workspace.AmbiencePart:FindFirstChildWhichIsA("Sound")
+
+            if sound then
+                sound.Volume = 0
+            end
+
+            break
+        end
     end
 
     workspace.AmbiencePart.ChildAdded:Connect(function(sound)
@@ -196,13 +206,13 @@ workspace.ChildAdded:Connect(function(child)
     if toggles.NodeMonsterNotifier.Value then
         for _, monster in ipairs(nodeMonsters) do
             if child.Name == monster then
-                getgenv().Alert(string.gsub(monster, "Ridge", "") .. " spawned. Hide!", 10)
+                getgenv().Alert(string.gsub(monster, "Ridge", "") .. " spawned. Hide!")
             end
         end
     end
 
     if toggles.PandemoniumNotifier.Value and child.Name == "Pandemonium" then
-        getgenv().Alert("Pandemonium spawned. Good luck!", 10)
+        getgenv().Alert("Pandemonium spawned. Good luck!")
     end
 end)
 
@@ -210,33 +220,37 @@ workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
     if not getgenv().pressurehub_loaded then return end
 
     if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
-        getgenv().Alert("A Wall Dweller has spawned somewhere in the walls. Find it!", 10)
+        getgenv().Alert("A Wall Dweller has spawned somewhere in the walls. Find it!")
     end
 end)
 
 workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
     if not getgenv().pressurehub_loaded then return end
 
-    if toggles.DangerousRoomNotifier.Value and string.match(room.Name, "RoundaboutDestroyed") then
-        getgenv().Alert("The next room has a big hole in the middle. Be careful!", 10)
+    if toggles.DangerousRoomNotifier.Value and string.match(room.Name, "RoundaboutDestroyed1") then
+        getgenv().Alert("The next room is dangerous. Be careful!")
     end
 
     if toggles.TurretNotifier.Value and string.match(room.Name, "Turret") then
-        getgenv().Alert("Turrets will spawn in the next room. Be careful!", 10)
+        getgenv().Alert("Turrets will spawn in the next room. Be careful!")
     end
 
     local interactables = room:WaitForChild("Interactables")
 
+    for _, child in pairs(interactables:GetChildren()) do
+        if child.Name == "EyefestationSpawn" then
+            getgenv().Alert("EyefestationSpawn")
+        end
+    end
+
     if toggles.EyefestationNotifier.Value then
         if interactables:FindFirstChild("EyefestationSpawn") then
-            getgenv().Alert("Eyefestation will spawn in the next room. Careful!", 5)
+            getgenv().Alert("Eyefestation will spawn in the next room. Careful!")
         end
 
-        interactables.ChildAdded:Connect(function(child)
-            if child.Name == "EyefestationSpawn" then
-                getgenv().Alert("Eyefestation will spawn in the next room. Careful!", 5)
-            elseif child.Name == "Eyefestation" then
-                getgenv().Alert("Eyefestation has spawned. Don't look at it!", 10)
+        interactables.DescendantAdded:Connect(function(child)
+            if child.Name == "Eyefestation" then
+                getgenv().Alert("Eyefestation has spawned. Don't look at it!")
             end
         end)
     end
@@ -271,19 +285,19 @@ tracers.Entities:AddToggle("NodeMonstersTracer", {
     Text = "Node Monsters"
 })
 
-tracers.Entities:AddToggle("PandemoniumNotifier", {
+tracers.Entities:AddToggle("PandemoniumTracer", {
     Text = "Pandemonium"
 })
 
-tracers.Entities:AddToggle("WallDwellerNotifier", {
+tracers.Entities:AddToggle("WallDwellerTracer", {
     Text = "Wall Dwellers"
 })
 
-tracers.Entities:AddToggle("EyefestationNotifier", {
+tracers.Entities:AddToggle("EyefestationTracer", {
     Text = "Eyefestation"
 })
 
-tracers.Entities:AddToggle("TurretNotifier", {
+tracers.Entities:AddToggle("TurretTracer", {
     Text = "Turrets"
 })
 

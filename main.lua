@@ -12,8 +12,8 @@ loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()
 
 local library = getgenv().Library
 
-getgenv().Alert = function(message, duration)
-    library:Notify(message, duration, "4590662766")
+getgenv().Alert = function(message)
+    library:Notify(message, 5, "4590662766")
 end
 
 local placesRepo = "https://raw.githubusercontent.com/xBackpack/PressureHub/main/places/"
