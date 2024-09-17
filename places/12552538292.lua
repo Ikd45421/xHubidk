@@ -223,7 +223,7 @@ end)
 workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
     if not getgenv().pressurehub_loaded then return end
 
-    if room:FindFirstChild("DamagePart") then
+    if room:FindFirstChild("DamageParts") then
         getgenv().Alert("The next room is dangerous. Be careful!")
     end
 
