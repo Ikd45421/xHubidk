@@ -67,7 +67,7 @@ main.Movement:AddSlider("SpeedBoost", {
 })
 
 humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
-    if not getgenv().PressureHubLoaded then return end
+    if not getgenv().pressurehub_loaded then return end
 
     local speedBoost = options.SpeedBoost.Value
 
@@ -82,7 +82,7 @@ main.Interaction:AddToggle("InstantInteract", {
 })
 
 proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
-    if not getgenv().PressureHubLoaded then return end
+    if not getgenv().pressurehub_loaded then return end
 
     if not toggles.InstantInteract.Value then return end
 
@@ -118,7 +118,7 @@ visual.Camera:AddSlider("FieldOfView", {
 })
 
 camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
-    if not getgenv().PressureHubLoaded then return end
+    if not getgenv().pressurehub_loaded then return end
 
     local fov = options.FieldOfView.Value
 
@@ -174,7 +174,7 @@ entity.Notifiers:AddToggle("NotifySound", {
 })
 
 workspace.ChildAdded:Connect(function(child)
-    if not getgenv().PressureHubLoaded then return end
+    if not getgenv().pressurehub_loaded then return end
 
     if doorsOpened.Value == 100 then return end
 
@@ -196,7 +196,7 @@ workspace.ChildAdded:Connect(function(child)
 end)
 
 workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
-    if not getgenv().PressureHubLoaded then return end
+    if not getgenv().pressurehub_loaded then return end
 
     if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
         getgenv():Alert("A Wall Dweller has spawned somewhere in the room's walls. Find it!", 10)
@@ -204,7 +204,7 @@ workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
 end)
 
 workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
-    if not getgenv().PressureHubLoaded then return end
+    if not getgenv().pressurehub_loaded then return end
 
     if toggles.TurretNotifier.Value and string.match(room.Name, "Turret") then
         getgenv():Alert("Turrets will spawn in the next room. Be Careful!", 10)
@@ -289,6 +289,7 @@ settings.Config:AddDivider()
 
 settings.Config:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
     Text = "Menu Keybind",
+    NoUI = true,
     Default = "RightShift"
 })
 
