@@ -11,14 +11,15 @@ end
 local workspace = game:GetService("Workspace")
 local lighting = game:GetService("Lighting")
 local players = game:GetService("Players")
+local repStorage = game:GetService("ReplicatedStorage")
 local proximityPromptService = game:GetService("ProximityPromptService")
+
+local loaded = repStorage:WaitForChild("Loaded")
 
 local options = getgenv().Linoria.Options
 local toggles = getgenv().Linoria.Toggles
 
 local player = players.LocalPlayer
-local playerFolder = player:WaitForChild("PlayerFolder")
-local doorsOpened = playerFolder:WaitForChild("DoorsOpened")
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character.Humanoid
 local camera = workspace.Camera
@@ -94,12 +95,15 @@ main.Sound:AddToggle("NoAmbience", {
     Text = "No Ambience"
 })
 
-workspace:WaitForChild("AmbiencePart").ChildAdded:Connect(function(sound)
-    if toggles.NoAmbience.Value then
-        sound.Volume = 0
-    end
-end)
+task.spawn(function()
+    loaded.Changed:Wait()
 
+    workspace:WaitForChild("AmbiencePart").ChildAdded:Connect(function(sound)
+        if toggles.NoAmbience.Value then
+            sound.Volume = 0
+        end
+    end)
+end)
 
 ------------------------------------------------
 
@@ -120,6 +124,8 @@ visual.Camera:AddSlider("FieldOfView", {
 
 camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
     if not getgenv().pressurehub_loaded then return end
+
+    if not workspace.Characters:FindFirstChild(player.Name) then return end
 
     local fov = options.FieldOfView.Value
 
@@ -222,7 +228,7 @@ workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
     local interactables = room:WaitForChild("Interactables")
 
     if (interactables:FindFirstChild("EyefestationSpawn")) then
-        getgenv():Alert("Eyefestation will spawn in the next room. Be careful!")
+        getgenv():Alert("Eyefestation will spawn in the next room. Be careful!", 10)
     end
 end)
 
