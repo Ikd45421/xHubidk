@@ -3,7 +3,7 @@ local library = getgenv().Library
 if not getgenv().pressurehub_loaded then
     getgenv().pressurehub_loaded = true
 else
-    Alert("Already Loaded!")
+    library:Notify("Already Loaded!")
     return
 end
 
@@ -162,5 +162,5 @@ settings.Config:AddButton("Unload", library.Unload)
 library:OnUnload(function()
     lighting.Ambient = Color3.fromRGB(40, 53, 65)
     getgenv().pressurehub_loaded = false
-    print("Goodbye!")
+    Alert("Unloaded!")
 end)
