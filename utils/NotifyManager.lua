@@ -42,7 +42,7 @@ monsters.ChildAdded:Connect(function(child)
     if not getgenv().PressureHubLoaded then return end
 
     if toggles.WallDwellerNotifier.Value and child.Name == "WallDweller" then
-        library:Notify("A Wall Dweller will spawn in the next  room!", 10)
+        library:Notify("A Wall Dweller has just spawned in your current room. Find it!", 10)
     end
 end)
 
@@ -57,7 +57,7 @@ rooms.ChildAdded:Connect(function(child)
 
     interactables.ChildAdded:Connect(function(interactable)
         if toggles.EyefestationNotifier.Value and interactable.Name == "EyefestationSpawn" then
-            library:Notify("Eyefestation spawned. Don't look at it!", 10)
+            library:Notify("Eyefestation will spawn in the next room. Don't look at it!", 10)
         end
     end)
 end)

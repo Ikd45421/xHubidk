@@ -7,5 +7,5 @@ proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
 
     if not toggles.InstantInteract.Value then return end
 
-    prompt.HoldDuration = 0
+    fireproximityprompt(prompt)
 end)

@@ -10,7 +10,7 @@ humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
 
     local speedBoost = options.SpeedBoost.Value
 
-    if speedBoost == 0 then return end
+    if speedBoost == 0 or humanoid.WalkSpeed == 0 then return end
     if humanoid.WalkSpeed == 16 + speedBoost then return end
 
     humanoid.WalkSpeed = 16 + speedBoost
