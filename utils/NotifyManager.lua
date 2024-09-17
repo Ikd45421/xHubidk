@@ -7,7 +7,12 @@ local nodeMonsters = {
     "Froger",
     "Pinkie",
     "Chainsmoker",
-    "Blitz"
+    "Blitz",
+    "RidgeAngler",
+    "RidgeFroger",
+    "RidgePinkie",
+    "RidgeChainsmoker",
+    "RidgeBlitz"
 }
 
 local library = getgenv().Library
@@ -19,7 +24,11 @@ workspace.ChildAdded:Connect(function(child)
     if toggles.NodeMonsterNotifier.Value then
         for _, monster in ipairs(nodeMonsters) do
             if child.Name == monster then
-                library:Notify(monster .. " spawned. Hide!", 10)
+                local str = monster
+                if (string.match(monster, "Ridge")) then
+                    str = string.sub(monster, 6)
+                end
+                library:Notify(str .. " spawned. Hide!", 10)
             end
         end
     end
@@ -33,22 +42,22 @@ monsters.ChildAdded:Connect(function(child)
     if not getgenv().PressureHubLoaded then return end
 
     if toggles.WallDwellerNotifier.Value and child.Name == "WallDweller" then
-        library:Notify("Wall Dweller spawned. Remember to look behind you!", 10)
+        library:Notify("A Wall Dweller will spawn in the next  room!", 10)
     end
 end)
 
 rooms.ChildAdded:Connect(function(child)
     if not getgenv().PressureHubLoaded then return end
 
-    local interactables = child:FindFirstChild("Interactables")
-
-    if not interactables then return end
-
-    if toggles.EyefestationNotifier.Value and interactables:FindFirstChild("EyefestationSpawn") then
-        library:Notify("Eyefestation spawned. Don't look at it!", 10)
+    if toggles.TurretNotifier.Value and string.match(child.Name, "Turret") then
+        library:Notify("Turrets will spawn in the next room. Be Careful!", 10)
     end
 
-    if toggles.TurretNotifier.Value and interactables:FindFirstChild("TurretControls") then
-        library:Notify("Turret spawned. Be careful!", 10)
-    end
+    local interactables = child:WaitForChild("Interactables")
+
+    interactables.ChildAdded:Connect(function(interactable)
+        if toggles.EyefestationNotifier.Value and interactable.Name == "EyefestationSpawn" then
+            library:Notify("Eyefestation spawned. Don't look at it!", 10)
+        end
+    end)
 end)
