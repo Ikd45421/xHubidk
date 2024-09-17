@@ -187,7 +187,9 @@ notifiers.Settings:AddToggle("NotifySound", {
 workspace.ChildAdded:Connect(function(child)
     if not getgenv().pressurehub_loaded then return end
 
-    if doorsOpened.Value == 100 then return end
+    local roomNumber = repStorage.Events.CurrentRoomNumber:InvokeServer()
+
+    if roomNumber == 100 then return end
 
     if toggles.NodeMonsterNotifier.Value then
         for _, monster in ipairs(nodeMonsters) do
