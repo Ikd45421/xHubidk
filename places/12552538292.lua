@@ -38,7 +38,7 @@ local nodeMonsters = {
 -- HUB --
 
 getgenv().Utils.GetNextRoom = function()
-    return repStorage.Events.CheckNextRoom:InvokeServer()[2]
+    return repStorage.Events.CheckNextRoom:InvokeServer()
 end
 
 local window = library:CreateWindow({
