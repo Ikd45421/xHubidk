@@ -14,6 +14,8 @@ local players = game:GetService("Players")
 local repStorage = game:GetService("ReplicatedStorage")
 local proximityPromptService = game:GetService("ProximityPromptService")
 
+local themes = getgenv().ThemeManager
+local saves = getgenv().SaveManager
 local options = getgenv().Linoria.Options
 local toggles = getgenv().Linoria.Toggles
 
@@ -353,3 +355,20 @@ library:OnUnload(function()
     getgenv().Utils = nil
     task.wait(1)
 end)
+
+themes:SetLibrary(library)
+saves:SetLibrary(library)
+
+themes:SetFolder("pressurehub")
+saves:SetFolder("pressurehub")
+
+saves:IgnoreThemeSettings()
+
+saves:SetIgnoreIndexes({
+    "MenuKeybind"
+})
+
+themes:ApplyToTab(tabs.Settings)
+saves:BuildConfigSection(tabs.Settings)
+
+saves:LoadAutoloadConfig()
