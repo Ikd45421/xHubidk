@@ -68,6 +68,18 @@ main.Movement:AddSlider("SpeedBoost", {
     Callback = function(value) humanoid.WalkSpeed = 16 + value end
 })
 
+main.Interaction:AddToggle("InstantInteract", {
+    Text = "Instant Interact"
+})
+
+main.Sound:AddToggle("NoAmbience", {
+    Text = "No Ambience"
+})
+
+main.Sound:AddToggle("NoFootsteps", {
+    Text = "No footsteps"
+})
+
 humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
     if not getgenv().pressurehub_loaded then return end
 
@@ -79,10 +91,6 @@ humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
     humanoid.WalkSpeed = 16 + speedBoost
 end)
 
-main.Interaction:AddToggle("InstantInteract", {
-    Text = "Instant Interact"
-})
-
 proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
     if not getgenv().pressurehub_loaded then return end
 
@@ -91,30 +99,33 @@ proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
     fireproximityprompt(prompt)
 end)
 
-main.Sound:AddToggle("NoAmbience", {
-    Text = "No Ambience"
-})
-
 task.spawn(function()
-    while task.wait() do
+    local part
+
+    repeat
+        task.wait()
+        if not toggles.NoAmbience.Value then break end
+
         if workspace:FindFirstChild("AmbiencePart") then
-            if not toggles.NoAmbience.Value then break end
+            part = workspace.AmbiencePart:FindFirstChildWhichIsA("Sound")
 
-            local sound = workspace.AmbiencePart:FindFirstChildWhichIsA("Sound")
-
-            if sound then
-                sound.Volume = 0
+            if part then
+                part.Volume = 0
             end
-
-            break
         end
-    end
+    until part
 
     workspace.AmbiencePart.ChildAdded:Connect(function(sound)
-        if toggles.NoAmbience.Value then
+        if toggles.NoAmbience.Value and sound:IsA("Sound") then
             sound.Volume = 0
         end
     end)
+end)
+
+character.UpperTorso.ChildAdded:Connect(function(child)
+    if toggles.NoFootsteps.Value and child:IsA("Sound") then
+        child.Volume = 0
+    end
 end)
 
 ------------------------------------------------
@@ -134,6 +145,17 @@ visual.Camera:AddSlider("FieldOfView", {
     Callback = function(value) camera.FieldOfView = value end
 })
 
+visual.Lighting:AddToggle("Fullbright", {
+    Text = "Fullbright",
+    Callback = function(value)
+        if value then
+            lighting.Ambient = Color3.fromRGB(255, 255, 255)
+        else
+            lighting.Ambient = Color3.fromRGB(40, 53, 65)
+        end
+    end
+})
+
 camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
     if not getgenv().pressurehub_loaded then return end
 
@@ -146,17 +168,6 @@ camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
 
     camera.FieldOfView = fov
 end)
-
-visual.Lighting:AddToggle("Fullbright", {
-    Text = "Fullbright",
-    Callback = function(value)
-        if value then
-            lighting.Ambient = Color3.fromRGB(255, 255, 255)
-        else
-            lighting.Ambient = Color3.fromRGB(40, 53, 65)
-        end
-    end
-})
 
 
 ------------------------------------------------
@@ -325,12 +336,15 @@ settings.Config:AddDivider()
 settings.Config:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
     Text = "Menu Keybind",
     NoUI = true,
-    Default = "RightShift"
+    Default = "RightShift",
+    Callback = function(keybind) library.ToggleKeybind = keybind end
 })
 
 settings.Config:AddButton("Unload", library.Unload)
 
 settings.Credits:AddLabel("xBackpack - Creator & Scripter")
+
+library.ToggleKeybind = options.MenuKeybind
 
 library:OnUnload(function()
     lighting.Ambient = Color3.fromRGB(40, 53, 65)
