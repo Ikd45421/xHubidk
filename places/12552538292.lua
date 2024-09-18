@@ -97,38 +97,38 @@ main.Sound:AddToggle("NoFootsteps", {
 })
 
 -- Speed Boost
-library:GiveSignal(humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
     local speedBoost = options.SpeedBoost.Value
 
     if humanoid.WalkSpeed == 0 then return end
     if humanoid.WalkSpeed == 16 + speedBoost then return end
 
     humanoid.WalkSpeed = 16 + speedBoost
-end))
+end)
 
 -- Instant Interact
-library:GiveSignal(proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
+proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
     if not toggles.InstantInteract.Value then return end
 
     fireproximityprompt(prompt)
-end))
+end)
 
 -- No Ambience
-library:GiveSignal(workspace.DescendantAdded:Connect(function(descendant)
+workspace.DescendantAdded:Connect(function(descendant)
     if descendant.Parent.Parent ~= workspace then return end
     if not toggles.NoAmbience.Value then return end
 
     if descendant:IsA("Sound") and descendant.Parent.Name == "AmbiencePart" then
         descendant.Volume = 0
     end
-end))
+end)
 
 -- No Footsteps
-library:GiveSignal(character.LowerTorso.ChildAdded:Connect(function(child)
+character.LowerTorso.ChildAdded:Connect(function(child)
     if toggles.NoFootsteps.Value and child:IsA("Sound") then
         child.Volume = 0
     end
-end))
+end)
 
 ------------------------------------------------
 
@@ -157,7 +157,7 @@ visual.Lighting:AddToggle("Fullbright", {
     end
 })
 
-library:GiveSignal(camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
+camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
     if not workspace.Characters:FindFirstChild(player.Name) then return end
 
     local fov = options.FieldOfView.Value
@@ -165,7 +165,7 @@ library:GiveSignal(camera:GetPropertyChangedSignal("FieldOfView"):Connect(functi
     if camera.FieldOfView == fov then return end
 
     camera.FieldOfView = fov
-end))
+end)
 
 ------------------------------------------------
 
@@ -209,7 +209,7 @@ notifiers.Rooms:AddToggle("DangerousRoomNotifier", {
     Text = "Dangerous Room Notifier"
 })
 
-library:GiveSignal(workspace.ChildAdded:Connect(function(child)
+workspace.ChildAdded:Connect(function(child)
     local roomNumber = repStorage.Events.CurrentRoomNumber:InvokeServer()
 
     if roomNumber == 100 then return end
@@ -225,15 +225,15 @@ library:GiveSignal(workspace.ChildAdded:Connect(function(child)
     if toggles.PandemoniumNotifier.Value and child.Name == "Pandemonium" then
         getgenv().Alert("Pandemonium spawned. Good luck!")
     end
-end))
+end)
 
-library:GiveSignal(workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
+workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
     if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
         getgenv().Alert("A Wall Dweller has spawned somewhere in the walls. Find it!")
     end
-end))
+end)
 
-library:GiveSignal(workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
+workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
     if room:WaitForChild("DamageParts", 5) then
         getgenv().Alert("The next room is dangerous. Be careful!")
     end
@@ -261,7 +261,7 @@ library:GiveSignal(workspace:WaitForChild("Rooms").ChildAdded:Connect(function(r
             end
         end)
     end
-end))
+end)
 
 ------------------------------------------------
 
