@@ -36,8 +36,9 @@ local nodeMonsters = {
 }
 
 -- HUB --
-getgenv().GrabCurrentRoom = function()
-    return repStorage.Events.CurrentRoomNumber:InvokeServer()
+
+getgenv().Utils.GetNextRoom = function()
+    return repStorage.Events.CheckNextRoom:InvokeServer()[2]
 end
 
 local window = library:CreateWindow({
@@ -93,42 +94,41 @@ main.Sound:AddToggle("NoFootsteps", {
     Text = "Mute Footsteps"
 })
 
-humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
-    if not getgenv().pressurehub_loaded then return end
-
+-- Speed Boost
+library:GiveSignal(humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
     local speedBoost = options.SpeedBoost.Value
 
-    if speedBoost == 0 or humanoid.WalkSpeed == 0 then return end
+    if humanoid.WalkSpeed == 0 then return end
     if humanoid.WalkSpeed == 16 + speedBoost then return end
 
     humanoid.WalkSpeed = 16 + speedBoost
-end)
+end))
 
-proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
-    if not getgenv().pressurehub_loaded then return end
-
+-- Instant Interact
+library:GiveSignal(proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
     if not toggles.InstantInteract.Value then return end
 
     fireproximityprompt(prompt)
-end)
+end))
 
-workspace.DescendantAdded:Connect(function(descendant)
+-- No Ambience
+library:GiveSignal(workspace.DescendantAdded:Connect(function(descendant)
     if descendant.Parent.Parent ~= workspace then return end
     if not toggles.NoAmbience.Value then return end
 
     if descendant:IsA("Sound") and descendant.Parent.Name == "AmbiencePart" then
         descendant.Volume = 0
     end
-end)
+end))
 
-character.LowerTorso.ChildAdded:Connect(function(child)
+-- No Footsteps
+library:GiveSignal(character.LowerTorso.ChildAdded:Connect(function(child)
     if toggles.NoFootsteps.Value and child:IsA("Sound") then
         child.Volume = 0
     end
-end)
+end))
 
 ------------------------------------------------
-
 
 local visual = {
     Camera = tabs.Visual:AddLeftGroupbox("Camera"),
@@ -155,19 +155,15 @@ visual.Lighting:AddToggle("Fullbright", {
     end
 })
 
-camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
-    if not getgenv().pressurehub_loaded then return end
-
+library:GiveSignal(camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
     if not workspace.Characters:FindFirstChild(player.Name) then return end
 
     local fov = options.FieldOfView.Value
 
-    if fov == 90 then return end
     if camera.FieldOfView == fov then return end
 
     camera.FieldOfView = fov
-end)
-
+end))
 
 ------------------------------------------------
 
@@ -180,7 +176,6 @@ entity.Exploits:AddToggle("AntiEyefestation", {
 })
 
 ------------------------------------------------
-
 
 local notifiers = {
     Entity = tabs.Notifiers:AddLeftGroupbox("Entity"),
@@ -212,9 +207,7 @@ notifiers.Rooms:AddToggle("DangerousRoomNotifier", {
     Text = "Dangerous Room Notifier"
 })
 
-workspace.ChildAdded:Connect(function(child)
-    if not getgenv().pressurehub_loaded then return end
-
+library:GiveSignal(workspace.ChildAdded:Connect(function(child)
     local roomNumber = repStorage.Events.CurrentRoomNumber:InvokeServer()
 
     if roomNumber == 100 then return end
@@ -230,20 +223,16 @@ workspace.ChildAdded:Connect(function(child)
     if toggles.PandemoniumNotifier.Value and child.Name == "Pandemonium" then
         getgenv().Alert("Pandemonium spawned. Good luck!")
     end
-end)
+end))
 
-workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
-    if not getgenv().pressurehub_loaded then return end
-
+library:GiveSignal(workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
     if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
         getgenv().Alert("A Wall Dweller has spawned somewhere in the walls. Find it!")
     end
-end)
+end))
 
-workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
-    if not getgenv().pressurehub_loaded then return end
-
-    if room:FindFirstChild("DamageParts") then
+library:GiveSignal(workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
+    if room:WaitForChild("DamageParts", 5) then
         getgenv().Alert("The next room is dangerous. Be careful!")
     end
 
@@ -262,17 +251,17 @@ workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
             if child.Name == "Eyefestation" then
                 getgenv().Alert("Eyefestation has spawned. Don't look at it!")
 
-                if toggles.AntiEyefestation.Value then
-                    child:WaitForChild("Active", 5).Value = false
-                end
+                local active = child:WaitForChild("Active", 5)
+
+                active.Changed:Connect(function()
+                    if active.Value then active.Value = false end
+                end)
             end
         end)
     end
-end)
-
+end))
 
 ------------------------------------------------
-
 
 local tracers = {
     Items = tabs.Tracers:AddRightGroupbox("Items"),
@@ -324,9 +313,7 @@ tracers.Other:AddToggle("GeneratorsTracer", {
     Text = "Generators"
 })
 
-
 ------------------------------------------------
-
 
 local settings = {
     Config = tabs.Settings:AddLeftGroupbox("Config"),
@@ -360,8 +347,9 @@ settings.Credits:AddLabel("xBackpack - Creator & Scripter")
 library.ToggleKeybind = options.MenuKeybind
 
 library:OnUnload(function()
+    getgenv().Alert("Unloading!")
     lighting.Ambient = Color3.fromRGB(40, 53, 65)
     getgenv().pressurehub_loaded = nil
-    getgenv().Alert("Unloaded!")
+    getgenv().Utils = nil
     task.wait(1)
 end)
