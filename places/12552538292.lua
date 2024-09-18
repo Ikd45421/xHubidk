@@ -96,7 +96,6 @@ main.Sound:AddToggle("NoFootsteps", {
     Text = "Mute Footsteps"
 })
 
--- Speed Boost
 humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
     local speedBoost = options.SpeedBoost.Value
 
@@ -106,14 +105,12 @@ humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
     humanoid.WalkSpeed = 16 + speedBoost
 end)
 
--- Instant Interact
 proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
     if not toggles.InstantInteract.Value then return end
 
     fireproximityprompt(prompt)
 end)
 
--- No Ambience
 workspace.DescendantAdded:Connect(function(descendant)
     if descendant.Parent.Parent ~= workspace then return end
     if not toggles.NoAmbience.Value then return end
@@ -123,7 +120,6 @@ workspace.DescendantAdded:Connect(function(descendant)
     end
 end)
 
--- No Footsteps
 character.LowerTorso.ChildAdded:Connect(function(child)
     if toggles.NoFootsteps.Value and child:IsA("Sound") then
         child.Volume = 0
