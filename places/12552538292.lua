@@ -245,23 +245,11 @@ library:GiveSignal(workspace:WaitForChild("Rooms").ChildAdded:Connect(function(r
 
     local interactables = room:WaitForChild("Interactables")
 
-    if toggles.EyefestationNotifier.Value then
-        if interactables:WaitForChild("EyefestationSpawn", 5) then
-            getgenv().Alert("Eyefestation may spawn in the next room. Careful!")
+    interactables.DescendantAdded:Connect(function(descendant)
+        if descendant.Name == "Active" and descendant:IsA("BoolValue") then
+            descendant.Value = false
         end
-
-        interactables.DescendantAdded:Connect(function(child)
-            if child.Name == "Eyefestation" then
-                getgenv().Alert("Eyefestation has spawned. Don't look at it!")
-
-                local active = child:WaitForChild("Active", 5)
-
-                active.Changed:Connect(function()
-                    if active.Value then active.Value = false end
-                end)
-            end
-        end)
-    end
+    end)
 end))
 
 ------------------------------------------------
