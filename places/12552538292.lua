@@ -36,7 +36,9 @@ local nodeMonsters = {
 }
 
 -- HUB --
-getgenv().CurrentRoom = repStorage.Events.CurrentRoomNumber:InvokeServer()
+getgenv().GrabCurrentRoom = function()
+    return repStorage.Events.CurrentRoomNumber:InvokeServer()
+end
 
 local window = library:CreateWindow({
     Title = "Pressure Hub",
@@ -73,11 +75,22 @@ main.Interaction:AddToggle("InstantInteract", {
 })
 
 main.Sound:AddToggle("NoAmbience", {
-    Text = "No Ambience"
+    Text = "Mute Ambience",
+    Callback = function(value)
+        if value then
+            local part = workspace:FindFirstChild("AmbiencePart")
+
+            if part then
+                for _, child in pairs(part:GetChildren()) do
+                    child.Volume = 0
+                end
+            end
+        end
+    end
 })
 
 main.Sound:AddToggle("NoFootsteps", {
-    Text = "No footsteps"
+    Text = "Mute Footsteps"
 })
 
 humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
@@ -99,30 +112,16 @@ proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
     fireproximityprompt(prompt)
 end)
 
-task.spawn(function()
-    local part
+workspace.DescendantAdded:Connect(function(descendant)
+    if descendant.Parent.Parent ~= workspace then return end
+    if not toggles.NoAmbience.Value then return end
 
-    repeat
-        task.wait()
-        if not toggles.NoAmbience.Value then break end
-
-        if workspace:FindFirstChild("AmbiencePart") then
-            part = workspace.AmbiencePart:FindFirstChildWhichIsA("Sound")
-
-            if part then
-                part.Volume = 0
-            end
-        end
-    until part
-
-    workspace.AmbiencePart.ChildAdded:Connect(function(sound)
-        if toggles.NoAmbience.Value and sound:IsA("Sound") then
-            sound.Volume = 0
-        end
-    end)
+    if descendant:IsA("Sound") and descendant.Parent.Name == "AmbiencePart" then
+        descendant.Volume = 0
+    end
 end)
 
-character.UpperTorso.ChildAdded:Connect(function(child)
+character.LowerTorso.ChildAdded:Connect(function(child)
     if toggles.NoFootsteps.Value and child:IsA("Sound") then
         child.Volume = 0
     end
@@ -169,6 +168,16 @@ camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
     camera.FieldOfView = fov
 end)
 
+
+------------------------------------------------
+
+local entity = {
+    Exploits = tabs.Entity:AddLeftGroupbox("Exploits")
+}
+
+entity.Exploits:AddToggle("AntiEyefestation", {
+    Text = "Anti Eyefestation"
+})
 
 ------------------------------------------------
 
@@ -246,12 +255,16 @@ workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
 
     if toggles.EyefestationNotifier.Value then
         if interactables:WaitForChild("EyefestationSpawn", 5) then
-            getgenv().Alert("Eyefestation will spawn in the next room. Careful!")
+            getgenv().Alert("Eyefestation may spawn in the next room. Careful!")
         end
 
         interactables.DescendantAdded:Connect(function(child)
             if child.Name == "Eyefestation" then
                 getgenv().Alert("Eyefestation has spawned. Don't look at it!")
+
+                if toggles.AntiEyefestation.Value then
+                    child:WaitForChild("Active", 5).Value = false
+                end
             end
         end)
     end
@@ -348,7 +361,7 @@ library.ToggleKeybind = options.MenuKeybind
 
 library:OnUnload(function()
     lighting.Ambient = Color3.fromRGB(40, 53, 65)
-    getgenv().pressurehub_loaded = false
+    getgenv().pressurehub_loaded = nil
     getgenv().Alert("Unloaded!")
     task.wait(1)
 end)
