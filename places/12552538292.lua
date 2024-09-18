@@ -38,6 +38,16 @@ local nodeMonsters = {
 }
 
 -- HUB --
+getgenv().Utils = {
+    GetCurrentRoomNumber = function()
+        return repStorage.Events.CurrentRoomNumber:InvokeServer()
+    end,
+
+    GetNextRoom = function()
+        return repStorage.Events.CheckNextRoom:InvokeServer()
+    end
+}
+
 local window = library:CreateWindow({
     Title = "Pressure Hub",
     Center = true,
@@ -91,35 +101,35 @@ main.Sound:AddToggle("NoFootsteps", {
     Text = "Mute Footsteps"
 })
 
-humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+library:GiveSignal(humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
     local speedBoost = options.SpeedBoost.Value
 
     if humanoid.WalkSpeed == 0 then return end
     if humanoid.WalkSpeed == 16 + speedBoost then return end
 
     humanoid.WalkSpeed = 16 + speedBoost
-end)
+end))
 
-proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
+library:GiveSignal(proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
     if not toggles.InstantInteract.Value then return end
 
     fireproximityprompt(prompt)
-end)
+end))
 
-workspace.DescendantAdded:Connect(function(descendant)
+library:GiveSignal(workspace.DescendantAdded:Connect(function(descendant)
     if descendant.Parent.Parent ~= workspace then return end
     if not toggles.NoAmbience.Value then return end
 
     if descendant:IsA("Sound") and descendant.Parent.Name == "AmbiencePart" then
         descendant.Volume = 0
     end
-end)
+end))
 
-character.LowerTorso.ChildAdded:Connect(function(child)
+library:GiveSignal(character.LowerTorso.ChildAdded:Connect(function(child)
     if toggles.NoFootsteps.Value and child:IsA("Sound") then
         child.Volume = 0
     end
-end)
+end))
 
 ------------------------------------------------
 
@@ -148,7 +158,7 @@ visual.Lighting:AddToggle("Fullbright", {
     end
 })
 
-camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
+library:GiveSignal(camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
     if not workspace.Characters:FindFirstChild(player.Name) then return end
 
     local fov = options.FieldOfView.Value
@@ -156,7 +166,7 @@ camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
     if camera.FieldOfView == fov then return end
 
     camera.FieldOfView = fov
-end)
+end))
 
 ------------------------------------------------
 
@@ -200,8 +210,8 @@ notifiers.Rooms:AddToggle("DangerousRoomNotifier", {
     Text = "Dangerous Room Notifier"
 })
 
-workspace.ChildAdded:Connect(function(child)
-    local roomNumber = repStorage.Events.CurrentRoomNumber:InvokeServer()
+library:GiveSignal(workspace.ChildAdded:Connect(function(child)
+    local roomNumber = getgenv().Utils.GetCurrentRoomNumber()
 
     if roomNumber == 100 then return end
 
@@ -216,15 +226,15 @@ workspace.ChildAdded:Connect(function(child)
     if toggles.PandemoniumNotifier.Value and child.Name == "Pandemonium" then
         getgenv().Alert("Pandemonium spawned. Good luck!")
     end
-end)
+end))
 
-workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
+library:GiveSignal(workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
     if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
         getgenv().Alert("A Wall Dweller has spawned somewhere in the walls. Find it!")
     end
-end)
+end))
 
-workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
+library:GiveSignal(workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
     if room:WaitForChild("DamageParts", 5) then
         getgenv().Alert("The next room is dangerous. Be careful!")
     end
@@ -252,7 +262,7 @@ workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
             end
         end)
     end
-end)
+end))
 
 ------------------------------------------------
 
@@ -347,19 +357,19 @@ library:OnUnload(function()
     task.wait(1)
 end)
 
--- themes:SetLibrary(library)
--- saves:SetLibrary(library)
+themes:SetLibrary(library)
+saves:SetLibrary(library)
 
--- themes:SetFolder("pressurehub")
--- saves:SetFolder("pressurehub")
+saves:IgnoreThemeSettings()
 
--- saves:IgnoreThemeSettings()
+saves:SetIgnoreIndexes({
+    "MenuKeybind"
+})
 
--- saves:SetIgnoreIndexes({
---     "MenuKeybind"
--- })
+themes:SetFolder("PressureHub")
+saves:SetFolder("PressureHub/Pressure")
 
--- themes:ApplyToTab(tabs.Settings)
--- saves:BuildConfigSection(tabs.Settings)
+themes:ApplyToTab(tabs.Settings)
+saves:BuildConfigSection(tabs.Settings)
 
--- saves:LoadAutoloadConfig()
+saves:LoadAutoloadConfig()
