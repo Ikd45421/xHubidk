@@ -91,19 +91,30 @@ main.Sound:AddToggle("NoAmbience", {
     Text = "Mute Ambience",
     Callback = function(value)
         if value then
-            local part = workspace:FindFirstChild("AmbiencePart")
+            local ambience = workspace:WaitForChild("Ambience"):WaitForChild("FacilityAmbience")
 
-            if part then
-                for _, child in pairs(part:GetChildren()) do
-                    child.Volume = 0
-                end
-            end
+            ambience.Volume = 0
         end
     end
 })
 
 main.Sound:AddToggle("NoFootsteps", {
     Text = "Mute Footsteps"
+})
+
+main.Sound:AddToggle("NoAnticipationMusic", {
+    Text = "Mute Room 1 Music",
+    Callback = function(value)
+        if value then
+            local music = workspace:WaitForChild("AnticipationIntro")
+            local loop = music:WaitForChild("AnticipationLoop")
+            local fadeout = loop:WaitForChild("AnticipationFadeout")
+
+            music.Volume = 0
+            loop.Volume = 0
+            fadeout.Volume = 0
+        end
+    end
 })
 
 main.Exploits:AddButton({
@@ -132,6 +143,15 @@ visual.Camera:AddSlider("FieldOfView", {
     Max = 120,
     Rounding = 0,
     Callback = function(value) camera.FieldOfView = value end
+})
+
+visual.Camera:AddToggle("ThirdPerson", {
+    Text = "Third Person"
+}):AddKeyPicker("ThirdPersonKey", {
+    Text = "Third Person",
+    Default = "V",
+    Mode = "Toggle",
+    SyncToggleState = library.IsMobile
 })
 
 visual.Lighting:AddToggle("Fullbright", {
@@ -190,6 +210,11 @@ notifiers.Rooms:AddToggle("TurretNotifier", {
     Text = "Turret Notifier"
 })
 
+notifiers.Rooms:AddToggle("SpecialRoomNotifier", {
+    Text = "Special Room Notifier",
+    Tooltip = "This includes turret rooms, grand encounters, and more!"
+})
+
 notifiers.Rooms:AddToggle("DangerousRoomNotifier", {
     Text = "Dangerous Room Notifier"
 })
@@ -219,12 +244,12 @@ library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
 end))
 
 library:GiveSignal(rooms.ChildAdded:Connect(function(room)
-    if room:WaitForChild("DamageParts", 1) then
-        getgenv().Alert("The next room is dangerous. Be careful!")
-    end
-
-    if toggles.TurretNotifier.Value and string.match(room.Name, "Turret") then
-        getgenv().Alert("Turrets will spawn in the next room. Be careful!")
+    if toggles.SpecialRoomNotifier.Value then
+        if room.Name == "RoundaboutDestroyed2" then
+            getgenv().Alert("The next room is dangerous. Be careful as you enter!")
+        elseif string.match(room.Name, "Turret") then
+            getgenv().Alert("The next room is dangerous")
+        end
     end
 
     local interactables = room:WaitForChild("Interactables")
