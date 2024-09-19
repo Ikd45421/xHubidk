@@ -14,6 +14,9 @@ local players = game:GetService("Players")
 local repStorage = game:GetService("ReplicatedStorage")
 local proximityPromptService = game:GetService("ProximityPromptService")
 
+local rooms = workspace:WaitForChild("Rooms")
+local monsters = workspace:WaitForChild("Monsters")
+
 local themes = getgenv().ThemeManager
 local saves = getgenv().SaveManager
 local options = getgenv().Linoria.Options
@@ -65,8 +68,9 @@ local tabs = {
 
 local main = {
     Movement = tabs.Main:AddLeftGroupbox("Movement"),
+    Sound = tabs.Main:AddLeftGroupbox("Sound"),
     Interaction = tabs.Main:AddRightGroupbox("Interaction"),
-    Sound = tabs.Main:AddLeftGroupbox("Sound")
+    Exploits = tabs.Main:AddRightGroupbox("Exploits")
 }
 
 main.Movement:AddSlider("SpeedBoost", {
@@ -100,6 +104,8 @@ main.Sound:AddToggle("NoAmbience", {
 main.Sound:AddToggle("NoFootsteps", {
     Text = "Mute Footsteps"
 })
+
+main.Exploits:AddButton("Play Again", repStorage.Events.PlayAgain.FireServer)
 
 library:GiveSignal(humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
     local speedBoost = options.SpeedBoost.Value
@@ -228,14 +234,14 @@ library:GiveSignal(workspace.ChildAdded:Connect(function(child)
     end
 end))
 
-library:GiveSignal(workspace:WaitForChild("Monsters").ChildAdded:Connect(function(monster)
+library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
     if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
         getgenv().Alert("A Wall Dweller has spawned somewhere in the walls. Find it!")
     end
 end))
 
-library:GiveSignal(workspace:WaitForChild("Rooms").ChildAdded:Connect(function(room)
-    if room:WaitForChild("DamageParts", 5) then
+library:GiveSignal(rooms.ChildAdded:Connect(function(room)
+    if room:WaitForChild("DamageParts", 1) then
         getgenv().Alert("The next room is dangerous. Be careful!")
     end
 
