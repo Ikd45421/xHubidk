@@ -12,6 +12,7 @@ local workspace = game:GetService("Workspace")
 local lighting = game:GetService("Lighting")
 local players = game:GetService("Players")
 local repStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
 local proximityPromptService = game:GetService("ProximityPromptService")
 
 local rooms = workspace:WaitForChild("Rooms")
@@ -105,36 +106,16 @@ main.Sound:AddToggle("NoFootsteps", {
     Text = "Mute Footsteps"
 })
 
-main.Exploits:AddButton("Play Again", repStorage.Events.PlayAgain.FireServer)
-
-library:GiveSignal(humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
-    local speedBoost = options.SpeedBoost.Value
-
-    if humanoid.WalkSpeed == 0 then return end
-    if humanoid.WalkSpeed == 16 + speedBoost then return end
-
-    humanoid.WalkSpeed = 16 + speedBoost
-end))
+main.Exploits:AddButton({
+    Text = "Play Again",
+    Func = repStorage.Events.PlayAgain.FireServer,
+    DoubleClick = true
+})
 
 library:GiveSignal(proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
     if not toggles.InstantInteract.Value then return end
 
     fireproximityprompt(prompt)
-end))
-
-library:GiveSignal(workspace.DescendantAdded:Connect(function(descendant)
-    if descendant.Parent.Parent ~= workspace then return end
-    if not toggles.NoAmbience.Value then return end
-
-    if descendant:IsA("Sound") and descendant.Parent.Name == "AmbiencePart" then
-        descendant.Volume = 0
-    end
-end))
-
-library:GiveSignal(character.LowerTorso.ChildAdded:Connect(function(child)
-    if toggles.NoFootsteps.Value and child:IsA("Sound") then
-        child.Volume = 0
-    end
 end))
 
 ------------------------------------------------
@@ -164,15 +145,12 @@ visual.Lighting:AddToggle("Fullbright", {
     end
 })
 
-library:GiveSignal(camera:GetPropertyChangedSignal("FieldOfView"):Connect(function()
-    if not workspace.Characters:FindFirstChild(player.Name) then return end
-
-    local fov = options.FieldOfView.Value
-
-    if camera.FieldOfView == fov then return end
-
-    camera.FieldOfView = fov
-end))
+visual.Lighting:AddToggle("NoCameraEffects", {
+    Text = "No Camera Effects",
+    Callback = function(value)
+        print("My bad will do this later")
+    end
+})
 
 ------------------------------------------------
 
@@ -312,32 +290,68 @@ tracers.Other:AddToggle("GeneratorsTracer", {
 
 ------------------------------------------------
 
+library:GiveSignal(runService.RenderStepped:Connect(function()
+    if toggles.NoAmbience.Value then
+        local ambiencePart = workspace:FindFirstChild("AmbiencePart")
+
+        if ambiencePart then
+            local child = ambiencePart:FindFirstChildWhichIsA("Sound")
+
+            if child then
+                child.Volume = 0
+            end
+        end
+    end
+
+    if toggles.NoFootsteps.Value then
+        for _, child in pairs(character.LowerTorso:GetChildren()) do
+            if child:IsA("Sound") then
+                child.Volume = 0
+            end
+        end
+    end
+
+    local speedBoost = options.SpeedBoost.Value
+
+    if speedBoost ~= 0 then
+        humanoid.WalkSpeed = 16 + speedBoost
+    end
+
+    local fov = options.FieldOfView.Value
+
+    if fov ~= 70 and character.Parent.Name == "Characters" then
+        camera.FieldOfView = fov
+    end
+end))
+
+------------------------------------------------
+
 local settings = {
-    Config = tabs.Settings:AddLeftGroupbox("Config"),
+    Menu = tabs.Settings:AddLeftGroupbox("Menu"),
     Credits = tabs.Settings:AddRightGroupbox("Credits")
 }
 
-settings.Config:AddToggle("KeybindMenu", {
+settings.Menu:AddToggle("KeybindMenu", {
     Text = "Open Keybind Menu",
     Callback = function(value) library.KeybindFrame.Visible = value end
 })
 
-settings.Config:AddToggle("CustomCursor", {
+settings.Menu:AddToggle("CustomCursor", {
     Text = "Show Custom Cursor",
     Default = true,
     Callback = function(value) library.ShowCustomCursor = value end
 })
 
-settings.Config:AddDivider()
+settings.Menu:AddDivider()
 
-settings.Config:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
+settings.Menu:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
     Text = "Menu Keybind",
     NoUI = true,
     Default = "RightShift",
     Callback = function(keybind) library.ToggleKeybind = keybind end
 })
 
-settings.Config:AddButton("Unload", library.Unload)
+settings.Menu:AddButton("Unload", library.Unload)
 
 settings.Credits:AddLabel("xBackpack - Creator & Scripter")
 
