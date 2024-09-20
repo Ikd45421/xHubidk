@@ -116,8 +116,16 @@ main.Sound:AddToggle("NoAnticipationMusic", {
 
 main.Exploits:AddButton({
     Text = "Play Again",
-    Func = repStorage.Events.PlayAgain.FireServer,
-    DoubleClick = true
+    DoubleClick = true,
+    Func = function()
+        repStorage.Events.PlayAgain:FireServer(0)
+        library:Notify("Teleporting in 5")
+        task.wait(1)
+        for i = 1, 5 do
+            task.wait(1)
+            library:Notify(5 - i)
+        end
+    end
 })
 
 library:GiveSignal(proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
