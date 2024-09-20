@@ -24,6 +24,7 @@ local options = getgenv().Linoria.Options
 local toggles = getgenv().Linoria.Toggles
 
 local player = players.LocalPlayer
+local playerGui = player.PlayerGui
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character.Humanoid
 local camera = workspace.Camera
@@ -83,9 +84,7 @@ main.Movement:AddSlider("SpeedBoost", {
     Callback = function(value) humanoid.WalkSpeed = 16 + value end
 })
 
-main.Interaction:AddToggle("InstantInteract", {
-    Text = "Instant Interact"
-})
+main.Interaction:AddToggle("InstantInteract", { Text = "Instant Interact" })
 
 main.Sound:AddToggle("NoAmbience", {
     Text = "Mute Ambience",
@@ -98,9 +97,7 @@ main.Sound:AddToggle("NoAmbience", {
     end
 })
 
-main.Sound:AddToggle("NoFootsteps", {
-    Text = "Mute Footsteps"
-})
+main.Sound:AddToggle("NoFootsteps", { Text = "Mute Footsteps" })
 
 main.Sound:AddToggle("NoAnticipationMusic", {
     Text = "Mute Room 1 Music",
@@ -146,7 +143,14 @@ visual.Camera:AddSlider("FieldOfView", {
 })
 
 visual.Camera:AddToggle("ThirdPerson", {
-    Text = "Third Person"
+    Text = "Third Person",
+    Callback = function(value)
+        if value then
+
+        else
+
+        end
+    end
 }):AddKeyPicker("ThirdPersonKey", {
     Text = "Third Person",
     Default = "V",
@@ -178,9 +182,9 @@ local entity = {
     Exploits = tabs.Entity:AddLeftGroupbox("Exploits")
 }
 
-entity.Exploits:AddToggle("AntiEyefestation", {
-    Text = "Anti Eyefestation"
-})
+entity.Exploits:AddToggle("AntiEyefestation", { Text = "Anti Eyefestation" })
+
+entity.Exploits:AddToggle("AntiImaginaryFriend", { Text = "Anti Imaginary Friend" })
 
 ------------------------------------------------
 
@@ -190,33 +194,27 @@ local notifiers = {
     -- Settings = tabs.Notifiers:AddLeftGroupbox("Settings")
 }
 
-notifiers.Entity:AddToggle("NodeMonsterNotifier", {
-    Text = "Node Monster Notifier"
-})
+notifiers.Entity:AddToggle("NodeMonsterNotifier", { Text = "Node Monster Notifier" })
 
-notifiers.Entity:AddToggle("PandemoniumNotifier", {
-    Text = "Pandemonium Notifier"
-})
+notifiers.Entity:AddToggle("PandemoniumNotifier", { Text = "Pandemonium Notifier" })
 
-notifiers.Entity:AddToggle("WallDwellerNotifier", {
-    Text = "Wall Dweller Notifier"
-})
+notifiers.Entity:AddToggle("WallDwellerNotifier", { Text = "Wall Dweller Notifier" })
 
-notifiers.Entity:AddToggle("EyefestationNotifier", {
-    Text = "Eyefestation Notifier"
-})
+notifiers.Entity:AddToggle("EyefestationNotifier", { Text = "Eyefestation Notifier" })
 
-notifiers.Rooms:AddToggle("TurretNotifier", {
-    Text = "Turret Notifier"
-})
+notifiers.Rooms:AddToggle("TurretNotifier", { Text = "Turret Notifier" })
 
-notifiers.Rooms:AddToggle("SpecialRoomNotifier", {
+notifiers.Rooms:AddDropdown("SpecialRoomNotifier", {
     Text = "Special Room Notifier",
-    Tooltip = "This includes turret rooms, grand encounters, and more!"
-})
-
-notifiers.Rooms:AddToggle("DangerousRoomNotifier", {
-    Text = "Dangerous Room Notifier"
+    AllowNull = true,
+    Multi = true,
+    Values = {
+        "Dangerous Rooms",
+        "Heavy Containment",
+        "Searchlights",
+        "Trenches",
+        "Greenhouse"
+    }
 })
 
 library:GiveSignal(workspace.ChildAdded:Connect(function(child)
@@ -243,12 +241,32 @@ library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
     end
 end))
 
+library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
+    local friend = child:FindFirstDescendant("Friend")
+
+    if friend then
+        friend.Transparency = 1
+    end
+end))
+
 library:GiveSignal(rooms.ChildAdded:Connect(function(room)
-    if toggles.SpecialRoomNotifier.Value then
-        if room.Name == "RoundaboutDestroyed2" then
+    if toggles.TurretNotifier.Value and string.match(room.Name, "Turret") then
+        getgenv().Alert("Turrets will spawn in the next room.")
+    end
+
+    local values = options.SpecialRoomNotifier.Value
+
+    if values then
+        if values[1] and room:WaitForChild("DamageParts") and room.DamageParts:WaitForChild("Pit") then
             getgenv().Alert("The next room is dangerous. Be careful as you enter!")
-        elseif string.match(room.Name, "Turret") then
-            getgenv().Alert("The next room is dangerous")
+        elseif values[2] and room.Name == "HCCheckpointStart" then
+            getgenv().Alert("You are about to enter heavy containment!")
+        elseif values[3] and string.match(room.Name, "SearchlightsStart") then
+            getgenv().Alert("You are about to enter the searchlights encounter. Good luck!")
+        elseif values[4] and string.match(room.Name, "Trench") then
+            getgenv().Alert("You are about to enter the trenches")
+        elseif values[5] and string.match(room.Name, "Grass") then
+            getgenv().Alert("You are about to enter the greenhouse")
         end
     end
 
@@ -256,7 +274,9 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
 
     interactables.DescendantAdded:Connect(function(descendant)
         if descendant.Name == "Active" and descendant:IsA("BoolValue") then
-            descendant.Value = false
+            descendant.Changed:Once(function()
+                descendant.Value = false
+            end)
         end
     end)
 end))
@@ -269,58 +289,36 @@ local tracers = {
     Other = tabs.Tracers:AddLeftGroupbox("Other")
 }
 
-tracers.Items:AddToggle("ItemsTracer", {
-    Text = "Items"
-})
+tracers.Items:AddToggle("ItemsTracer", { Text = "Items", Risky = true })
 
-tracers.Items:AddToggle("DocumentsTracers", {
-    Text = "Documents"
-})
+tracers.Items:AddToggle("DocumentsTracers", { Text = "Documents", Risky = true })
 
-tracers.Items:AddToggle("KeycardsTracer", {
-    Text = "Keycards"
-})
+tracers.Items:AddToggle("KeycardsTracer", { Text = "Keycards", Risky = true })
 
-tracers.Items:AddToggle("MoneyTracer", {
-    Text = "Money"
-})
+tracers.Items:AddToggle("MoneyTracer", { Text = "Money", Risky = true })
 
-tracers.Entities:AddToggle("PlayersTracer", {
-    Text = "Players"
-})
+tracers.Entities:AddToggle("PlayersTracer", { Text = "Players", Risky = true })
 
-tracers.Entities:AddToggle("NodeMonstersTracer", {
-    Text = "Node Monsters"
-})
+tracers.Entities:AddToggle("NodeMonstersTracer", { Text = "Node Monsters", Risky = true })
 
-tracers.Entities:AddToggle("PandemoniumTracer", {
-    Text = "Pandemonium"
-})
+tracers.Entities:AddToggle("PandemoniumTracer", { Text = "Pandemonium", Risky = true })
 
-tracers.Entities:AddToggle("WallDwellerTracer", {
-    Text = "Wall Dwellers"
-})
+tracers.Entities:AddToggle("WallDwellerTracer", { Text = "Wall Dwellers", Risky = true })
 
-tracers.Entities:AddToggle("EyefestationTracer", {
-    Text = "Eyefestation"
-})
+tracers.Entities:AddToggle("EyefestationTracer", { Text = "Eyefestation", Risky = true })
 
-tracers.Entities:AddToggle("TurretTracer", {
-    Text = "Turrets"
-})
+tracers.Entities:AddToggle("SearchlightsTracer", { Text = "Searchlights", Risky = true })
 
-tracers.Other:AddToggle("GeneratorsTracer", {
-    Text = "Generators"
-})
+tracers.Other:AddToggle("GeneratorsTracer", { Text = "Generators", Risky = true })
 
 ------------------------------------------------
 
 library:GiveSignal(runService.RenderStepped:Connect(function()
     if toggles.NoAmbience.Value then
-        local ambiencePart = workspace:FindFirstChild("AmbiencePart")
+        local part = workspace:FindFirstChild("AmbiencePart")
 
-        if ambiencePart then
-            local child = ambiencePart:FindFirstChildWhichIsA("Sound")
+        if part then
+            local child = part:FindFirstChildWhichIsA("Sound")
 
             if child then
                 child.Volume = 0
@@ -329,8 +327,20 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
     end
 
     if toggles.NoFootsteps.Value then
-        for _, child in pairs(character.LowerTorso:GetChildren()) do
+        for _, child in next, character.LowerTorso:GetChildren() do
             if child:IsA("Sound") then
+                child.Volume = 0
+            end
+        end
+    end
+
+    if toggles.AntiImaginaryFriend.Value then
+        local part = workspace:FindFirstChild("FriendPart")
+
+        if part then
+            local child = part:FindFirstChildWhichIsA("Sound")
+
+            if child then
                 child.Volume = 0
             end
         end
@@ -395,9 +405,7 @@ saves:SetLibrary(library)
 
 saves:IgnoreThemeSettings()
 
-saves:SetIgnoreIndexes({
-    "MenuKeybind"
-})
+saves:SetIgnoreIndexes({ "MenuKeybind" })
 
 themes:SetFolder("PressureHub")
 saves:SetFolder("PressureHub/Pressure")
