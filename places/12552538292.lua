@@ -86,6 +86,16 @@ main.Movement:AddSlider("SpeedBoost", {
 
 main.Interaction:AddToggle("InstantInteract", { Text = "Instant Interact" })
 
+main.AutoInteract:AddToggle("AutoInteract", {
+    Text = "Auto Interact",
+    Risky = true
+}):AddKeyPicker("AutoInteractKey", {
+    Text = "Auto Interact",
+    Default = "R",
+    Mode = "Hold",
+    SyncToggleState = library.IsMobile
+})
+
 main.Sound:AddToggle("NoAmbience", {
     Text = "Mute Ambience",
     Callback = function(value)
@@ -120,7 +130,6 @@ main.Exploits:AddButton({
     Func = function()
         repStorage.Events.PlayAgain:FireServer(0)
         library:Notify("Teleporting in 5")
-        task.wait(1)
         for i = 1, 5 do
             task.wait(1)
             library:Notify(5 - i)
@@ -158,7 +167,8 @@ visual.Camera:AddToggle("ThirdPerson", {
         else
 
         end
-    end
+    end,
+    Risky = true
 }):AddKeyPicker("ThirdPersonKey", {
     Text = "Third Person",
     Default = "V",
@@ -181,7 +191,8 @@ visual.Lighting:AddToggle("NoCameraEffects", {
     Text = "No Camera Effects",
     Callback = function(value)
         print("My bad will do this later")
-    end
+    end,
+    Risky = true
 })
 
 ------------------------------------------------
@@ -190,7 +201,7 @@ local entity = {
     Exploits = tabs.Entity:AddLeftGroupbox("Exploits")
 }
 
-entity.Exploits:AddToggle("AntiEyefestation", { Text = "Anti Eyefestation" })
+entity.Exploits:AddToggle("AntiEyefestation", { Text = "Anti Eyefestation", Risky = true })
 
 entity.Exploits:AddToggle("AntiImaginaryFriend", { Text = "Anti Imaginary Friend" })
 
@@ -208,7 +219,7 @@ notifiers.Entity:AddToggle("PandemoniumNotifier", { Text = "Pandemonium Notifier
 
 notifiers.Entity:AddToggle("WallDwellerNotifier", { Text = "Wall Dweller Notifier" })
 
-notifiers.Entity:AddToggle("EyefestationNotifier", { Text = "Eyefestation Notifier" })
+notifiers.Entity:AddToggle("EyefestationNotifier", { Text = "Eyefestation Notifier", Risky = true })
 
 notifiers.Rooms:AddToggle("TurretNotifier", { Text = "Turret Notifier" })
 
