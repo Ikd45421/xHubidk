@@ -86,7 +86,7 @@ main.Movement:AddSlider("SpeedBoost", {
 
 main.Interaction:AddToggle("InstantInteract", { Text = "Instant Interact" })
 
-main.AutoInteract:AddToggle("AutoInteract", {
+main.Interaction:AddToggle("AutoInteract", {
     Text = "Auto Interact",
     Risky = true
 }):AddKeyPicker("AutoInteractKey", {
