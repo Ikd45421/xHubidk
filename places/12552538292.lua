@@ -150,7 +150,7 @@ main.Exploits:AddButton({
     Func = function()
         repStorage.Events.PlayAgain:FireServer(0)
         library:Notify("Teleporting in 5")
-        for i = 1, 5 do
+        for i = 1, 4 do
             task.wait(1)
             library:Notify(5 - i)
         end
@@ -289,11 +289,11 @@ library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
 end))
 
 library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
-    local friend = child:FindFirstDescendant("Friend")
+    if child.Name ~= "Pixel" then return end
 
-    if friend then
-        friend.Transparency = 1
-    end
+    local friend = child:WaitForChild("ViewportFrame"):WaitForChild("ImaginaryFriend"):WaitForChild("Friend")
+
+    friend.Transparency = 1
 end))
 
 library:GiveSignal(rooms.ChildAdded:Connect(function(room)
@@ -308,7 +308,7 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
             getgenv().Alert("The next room is dangerous. Be careful as you enter!")
         elseif values[2] and room.Name == "HCCheckpointStart" then
             getgenv().Alert("You are about to enter heavy containment!")
-        elseif values[3] and string.match(room.Name, "SearchlightsStart") then
+        elseif values[3] and string.match(room.Name, "SearchlightsIntro") then
             getgenv().Alert("You are about to enter the searchlights encounter. Good luck!")
         elseif values[4] and string.match(room.Name, "Trench") then
             getgenv().Alert("You are about to enter the trenches")
