@@ -84,6 +84,26 @@ main.Movement:AddSlider("SpeedBoost", {
     Callback = function(value) humanoid.WalkSpeed = 16 + value end
 })
 
+main.Movement:AddToggle("Noclip", {
+    Text = "Noclip",
+    Risky = true
+}):AddKeyPicker("NoclipKey", {
+    Text = "Noclip",
+    Default = "N",
+    Mode = "Toggle",
+    SyncToggleState = library.IsMobile
+})
+
+main.Movement:AddToggle("Fly", {
+    Text = "Fly",
+    Risky = true
+}):AddKeyPicker("FlyKey", {
+    Text = "Fly",
+    Default = "F",
+    Mode = "Toggle",
+    SyncToggleState = library.IsMobile
+})
+
 main.Interaction:AddToggle("InstantInteract", { Text = "Instant Interact" })
 
 main.Interaction:AddToggle("AutoInteract", {
@@ -163,9 +183,9 @@ visual.Camera:AddToggle("ThirdPerson", {
     Text = "Third Person",
     Callback = function(value)
         if value then
-
+            camera.CFrame = CFrame.new()
         else
-
+            camera.CFrame = CFrame.new()
         end
     end,
     Risky = true
@@ -204,6 +224,14 @@ local entity = {
 entity.Exploits:AddToggle("AntiEyefestation", { Text = "Anti Eyefestation", Risky = true })
 
 entity.Exploits:AddToggle("AntiImaginaryFriend", { Text = "Anti Imaginary Friend" })
+
+entity.Exploits:AddToggle("AntiSearchlights", { Text = "Anti Searchlights", Risky = true })
+
+entity.Exploits:AddToggle("AntiSquiddles", { Text = "Anti Squiddles", Risky = true })
+
+entity.Exploits:AddToggle("AntiSteam", { Text = "Anti Steam", Risky = true })
+
+entity.Exploits:AddToggle("AntiTurret", { Text = "Anti Turret", Risky = true })
 
 ------------------------------------------------
 
