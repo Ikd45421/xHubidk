@@ -42,6 +42,16 @@ local nodeMonsters = {
     "RidgeBlitz"
 }
 
+local function createOutline(part, color)
+    local highlight = Instance.new("Highlight")
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Enabled = true
+    highlight.FillTransparency = 1
+    highlight.OutlineColor = color
+    highlight.OutlineTransparency = 0
+    highlight.Parent = part
+end
+
 -- HUB --
 getgenv().Utils = {
     GetCurrentRoomNumber = function()
@@ -90,8 +100,7 @@ main.Movement:AddToggle("Noclip", {
 }):AddKeyPicker("NoclipKey", {
     Text = "Noclip",
     Default = "N",
-    Mode = "Toggle",
-    SyncToggleState = library.IsMobile
+    Mode = "Toggle"
 })
 
 main.Movement:AddToggle("Fly", {
@@ -100,8 +109,7 @@ main.Movement:AddToggle("Fly", {
 }):AddKeyPicker("FlyKey", {
     Text = "Fly",
     Default = "F",
-    Mode = "Toggle",
-    SyncToggleState = library.IsMobile
+    Mode = "Toggle"
 })
 
 main.Interaction:AddToggle("InstantInteract", { Text = "Instant Interact" })
@@ -112,8 +120,7 @@ main.Interaction:AddToggle("AutoInteract", {
 }):AddKeyPicker("AutoInteractKey", {
     Text = "Auto Interact",
     Default = "R",
-    Mode = "Hold",
-    SyncToggleState = library.IsMobile
+    Mode = "Hold"
 })
 
 main.Sound:AddToggle("NoAmbience", {
@@ -181,19 +188,11 @@ visual.Camera:AddSlider("FieldOfView", {
 
 visual.Camera:AddToggle("ThirdPerson", {
     Text = "Third Person",
-    Callback = function(value)
-        if value then
-            camera.CFrame = CFrame.new()
-        else
-            camera.CFrame = CFrame.new()
-        end
-    end,
     Risky = true
 }):AddKeyPicker("ThirdPersonKey", {
     Text = "Third Person",
     Default = "V",
-    Mode = "Toggle",
-    SyncToggleState = library.IsMobile
+    Mode = "Toggle"
 })
 
 visual.Lighting:AddToggle("Fullbright", {
@@ -317,15 +316,12 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
         end
     end
 
-    local interactables = room:WaitForChild("Interactables")
+    if toggles.DoorsTracer.Value then
+        local entrances = room:WaitForChild("Entrances")
+        local door = entrances:WaitForChild("NormalDoor"):WaitForChild("Door"):WaitForChild("Door1")
 
-    interactables.DescendantAdded:Connect(function(descendant)
-        if descendant.Name == "Active" and descendant:IsA("BoolValue") then
-            descendant.Changed:Once(function()
-                descendant.Value = false
-            end)
-        end
-    end)
+        createOutline(door, options.DoorsTracerColor.Value)
+    end
 end))
 
 ------------------------------------------------
@@ -357,6 +353,12 @@ tracers.Entities:AddToggle("EyefestationTracer", { Text = "Eyefestation", Risky 
 tracers.Entities:AddToggle("SearchlightsTracer", { Text = "Searchlights", Risky = true })
 
 tracers.Other:AddToggle("GeneratorsTracer", { Text = "Generators", Risky = true })
+
+tracers.Other:AddToggle("DoorsTracer", {
+    Text = "Doors"
+}):AddColorPicker("DoorsTracerColor", {
+    Default = Color3.fromRGB(255, 0, 0)
+})
 
 ------------------------------------------------
 
@@ -391,6 +393,10 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
                 child.Volume = 0
             end
         end
+    end
+
+    if toggles.ThirdPerson.Value and options.ThirdPersonKey:GetState() then
+        camera.CFrame = camera.CFrame * CFrame.new(1.5, -0.5, 6.5)
     end
 
     local speedBoost = options.SpeedBoost.Value
