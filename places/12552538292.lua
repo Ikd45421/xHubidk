@@ -1,7 +1,7 @@
 local library = getgenv().Library
 
-if not getgenv().pressurehub_loaded then
-    getgenv().pressurehub_loaded = true
+if not getgenv().xhub_loaded then
+    getgenv().xhub_loaded = true
 else
     library:Notify("Already Loaded!")
     return
@@ -63,7 +63,7 @@ local function createItemOutline(part, color)
 end
 
 local window = library:CreateWindow({
-    Title = "Pressure Hub",
+    Title = "xHub - " + player.DisplayName,
     Center = true,
     AutoShow = true
 })
@@ -449,7 +449,7 @@ library:OnUnload(function()
     getgenv().Alert("Unloading!")
     lighting.Ambient = Color3.fromRGB(40, 53, 65)
     getgenv().Alert = nil
-    getgenv().pressurehub_loaded = nil
+    getgenv().xhub_loaded = nil
 end)
 
 themes:SetLibrary(library)
@@ -459,8 +459,8 @@ saves:IgnoreThemeSettings()
 
 saves:SetIgnoreIndexes({ "MenuKeybind" })
 
-themes:SetFolder("PressureHub")
-saves:SetFolder("PressureHub/Pressure")
+themes:SetFolder("xHub")
+saves:SetFolder("xHub/Pressure")
 
 themes:ApplyToTab(tabs.Settings)
 saves:BuildConfigSection(tabs.Settings)
