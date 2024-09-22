@@ -7,7 +7,7 @@ This is a lightweight script for Roblox Pressure! I only made this since I could
 ## Installation (Only 3 steps)
 
 1. Open your script executor
-2. Copy and paste this: loadstring(game:HttpGet("https://raw.githubusercontent.com/xBackpack/PressureHub/main/main.lua"))()
+2. Copy and paste the following: loadstring(game:HttpGet("https://raw.githubusercontent.com/xBackpack/PressureHub/main/main.lua"))()
 3. Execute
 
 Done!
