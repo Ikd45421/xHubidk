@@ -27,7 +27,7 @@ local player = players.LocalPlayer
 local playerGui = player.PlayerGui
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character.Humanoid
-local camera = workspace.Camera
+local camera = workspace.CurrentCamera
 
 local nodeMonsters = {
     "Angler",
@@ -42,13 +42,23 @@ local nodeMonsters = {
     "RidgeBlitz"
 }
 
-local function createOutline(part, color)
+local function createNormalOutline(part, color)
     local highlight = Instance.new("Highlight")
     highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     highlight.Enabled = true
     highlight.FillTransparency = 1
     highlight.OutlineColor = color
     highlight.OutlineTransparency = 0
+    highlight.Parent = part
+end
+
+local function createItemOutline(part, color)
+    local highlight = Instance.new("Highlight")
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Enabled = true
+    highlight.FillColor = color
+    highlight.FillTransparency = 0.25
+    highlight.OutlineTransparency = 1
     highlight.Parent = part
 end
 
@@ -112,6 +122,10 @@ main.Interaction:AddToggle("AutoInteract", {
     Mode = "Hold"
 })
 
+main.Interaction:AddToggle("AutoGenerator", {
+    Text = "Auto Searchlights Generator"
+})
+
 main.Sound:AddToggle("NoAmbience", {
     Text = "Mute Ambience",
     Callback = function(value)
@@ -138,6 +152,11 @@ main.Sound:AddToggle("NoAnticipationMusic", {
             fadeout.Volume = 0
         end
     end
+})
+
+main.Exploits:AddToggle("LessLag", {
+    Text = "Performance Increase",
+    Tooltip = "Just a few optimisations"
 })
 
 main.Exploits:AddButton({
@@ -176,12 +195,18 @@ visual.Camera:AddSlider("FieldOfView", {
 })
 
 visual.Camera:AddToggle("ThirdPerson", {
-    Text = "Third Person",
-    Risky = true
+    Text = "Third Person"
 }):AddKeyPicker("ThirdPersonKey", {
     Text = "Third Person",
     Default = "V",
-    Mode = "Toggle"
+    Mode = "Toggle",
+    Callback = function(value)
+        if value then
+            character.Head.Transparency = 0
+        else
+            character.Head.Transparency = 1
+        end
+    end
 })
 
 visual.Lighting:AddToggle("Fullbright", {
@@ -193,11 +218,6 @@ visual.Lighting:AddToggle("Fullbright", {
             lighting.Ambient = Color3.fromRGB(40, 53, 65)
         end
     end
-})
-
-visual.Lighting:AddToggle("NoCameraEffects", {
-    Text = "No Camera Effects",
-    Risky = true
 })
 
 ------------------------------------------------
@@ -238,6 +258,10 @@ notifiers.Rooms:AddToggle("TurretNotifier", { Text = "Turret Notifier" })
 notifiers.Rooms:AddToggle("DangerousNotifier", { Text = "Dangerous Room Notifier" })
 
 library:GiveSignal(workspace.ChildAdded:Connect(function(child)
+    if toggles.LessLag.Value and child.Name == "VentCover" then
+        child:Destroy()
+    end
+
     local roomNumber = repStorage.Events.CurrentRoomNumber:InvokeServer()
 
     if roomNumber == 100 then return end
@@ -258,6 +282,10 @@ end))
 library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
     if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
         getgenv().Alert("A Wall Dweller has spawned somewhere in the walls. Find it!")
+
+        if toggles.WallDwellerTracer.Value then
+            createNormalOutline(monster, options.WallDwellerTracerColor.Value)
+        end
     end
 end))
 
@@ -280,9 +308,9 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
 
     if toggles.DoorsTracer.Value then
         local entrances = room:WaitForChild("Entrances")
-        local door = entrances:WaitForChild("NormalDoor"):WaitForChild("Door"):WaitForChild("Door1")
+        local door = entrances:WaitForChild("NormalDoor")
 
-        createOutline(door, options.DoorsTracerColor.Value)
+        createNormalOutline(door, options.DoorsTracerColor.Value)
     end
 end))
 
@@ -308,7 +336,11 @@ tracers.Entities:AddToggle("NodeMonstersTracer", { Text = "Node Monsters", Risky
 
 tracers.Entities:AddToggle("PandemoniumTracer", { Text = "Pandemonium", Risky = true })
 
-tracers.Entities:AddToggle("WallDwellerTracer", { Text = "Wall Dwellers", Risky = true })
+tracers.Entities:AddToggle("WallDwellerTracer", {
+    Text = "Wall Dwellers"
+}):AddColorPicker("WallDwellerTracerColor", {
+    Default = Color3.fromRGB(0, 0, 255)
+})
 
 tracers.Entities:AddToggle("EyefestationTracer", { Text = "Eyefestation", Risky = true })
 
@@ -332,7 +364,7 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
             local child = part:FindFirstChildWhichIsA("Sound")
 
             if child then
-                child.Volume = 0
+                child:Destroy()
             end
         end
     end
@@ -340,7 +372,7 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
     if toggles.NoFootsteps.Value then
         for _, child in next, character.LowerTorso:GetChildren() do
             if child:IsA("Sound") then
-                child.Volume = 0
+                child:Destroy()
             end
         end
     end
@@ -352,7 +384,7 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
             local child = part:FindFirstChildWhichIsA("Sound")
 
             if child then
-                child.Volume = 0
+                child:Destroy()
             end
         end
     end
