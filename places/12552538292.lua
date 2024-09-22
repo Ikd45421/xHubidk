@@ -144,7 +144,7 @@ main.Exploits:AddButton({
     Text = "Play Again",
     DoubleClick = true,
     Func = function()
-        repStorage.Events.PlayAgain:FireServer(0)
+        repStorage.Events.PlayAgain:FireServer()
         library:Notify("Teleporting in 5")
         for i = 1, 4 do
             task.wait(1)
@@ -238,7 +238,7 @@ notifiers.Rooms:AddToggle("TurretNotifier", { Text = "Turret Notifier" })
 notifiers.Rooms:AddToggle("DangerousNotifier", { Text = "Dangerous Room Notifier" })
 
 library:GiveSignal(workspace.ChildAdded:Connect(function(child)
-    local roomNumber = getgenv().Utils.GetCurrentRoomNumber()
+    local roomNumber = repStorage.Events.CurrentRoomNumber:InvokeServer()
 
     if roomNumber == 100 then return end
 
@@ -274,7 +274,7 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
         getgenv().Alert("Turrets will spawn in the next room.")
     end
 
-    if toggles.DangerousNotifier.Value and room:WaitForChild("DamageParts") and room.DamageParts:WaitForChild("Pit") then
+    if toggles.DangerousNotifier.Value and room:WaitForChild("DamageParts", .5) and room.DamageParts:WaitForChild("Pit", .5) then
         getgenv().Alert("The next room is dangerous. Careful as you enter!")
     end
 
@@ -410,9 +410,8 @@ library.ToggleKeybind = options.MenuKeybind
 library:OnUnload(function()
     getgenv().Alert("Unloading!")
     lighting.Ambient = Color3.fromRGB(40, 53, 65)
+    getgenv().Alert = nil
     getgenv().pressurehub_loaded = nil
-    getgenv().Utils = nil
-    task.wait(1)
 end)
 
 themes:SetLibrary(library)
