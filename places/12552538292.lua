@@ -257,9 +257,11 @@ notifiers.Rooms:AddToggle("TurretNotifier", { Text = "Turret Notifier" })
 
 notifiers.Rooms:AddToggle("DangerousNotifier", { Text = "Dangerous Room Notifier" })
 
+notifiers.Rooms:AddToggle("RareRoomNotifier", { Text = "Rare Room Notifier" })
+
 library:GiveSignal(workspace.ChildAdded:Connect(function(child)
     if toggles.LessLag.Value and child.Name == "VentCover" then
-        child:Destroy()
+        task.delay(.1, child.Destroy)
     end
 
     local roomNumber = repStorage.Events.CurrentRoomNumber:InvokeServer()
@@ -298,6 +300,10 @@ library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
 end))
 
 library:GiveSignal(rooms.ChildAdded:Connect(function(room)
+    if toggles.RareRoomNotifier.Value and room.Name == "ValculaVoidMass" then
+        getgenv().Alert("The next room is rare!")
+    end
+
     if toggles.TurretNotifier.Value and string.match(room.Name, "Turret") then
         getgenv().Alert("Turrets will spawn in the next room.")
     end
@@ -308,7 +314,7 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
 
     if toggles.DoorsTracer.Value then
         local entrances = room:WaitForChild("Entrances")
-        local door = entrances:WaitForChild("NormalDoor")
+        local door = entrances:WaitForChild("NormalDoor"):WaitForChild("Door")
 
         createNormalOutline(door, options.DoorsTracerColor.Value)
     end
