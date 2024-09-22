@@ -52,17 +52,6 @@ local function createOutline(part, color)
     highlight.Parent = part
 end
 
--- HUB --
-getgenv().Utils = {
-    GetCurrentRoomNumber = function()
-        return repStorage.Events.CurrentRoomNumber:InvokeServer()
-    end,
-
-    GetNextRoom = function()
-        return repStorage.Events.CheckNextRoom:InvokeServer()
-    end
-}
-
 local window = library:CreateWindow({
     Title = "Pressure Hub",
     Center = true,
@@ -208,9 +197,6 @@ visual.Lighting:AddToggle("Fullbright", {
 
 visual.Lighting:AddToggle("NoCameraEffects", {
     Text = "No Camera Effects",
-    Callback = function(value)
-        print("My bad will do this later")
-    end,
     Risky = true
 })
 
@@ -237,7 +223,6 @@ entity.Exploits:AddToggle("AntiTurret", { Text = "Anti Turret", Risky = true })
 local notifiers = {
     Entity = tabs.Notifiers:AddLeftGroupbox("Entity"),
     Rooms = tabs.Notifiers:AddRightGroupbox("Rooms")
-    -- Settings = tabs.Notifiers:AddLeftGroupbox("Settings")
 }
 
 notifiers.Entity:AddToggle("NodeMonsterNotifier", { Text = "Node Monster Notifier" })
@@ -250,18 +235,7 @@ notifiers.Entity:AddToggle("EyefestationNotifier", { Text = "Eyefestation Notifi
 
 notifiers.Rooms:AddToggle("TurretNotifier", { Text = "Turret Notifier" })
 
-notifiers.Rooms:AddDropdown("SpecialRoomNotifier", {
-    Text = "Special Room Notifier",
-    AllowNull = true,
-    Multi = true,
-    Values = {
-        "Dangerous Rooms",
-        "Heavy Containment",
-        "Searchlight Encounters",
-        "Trenches",
-        "Underwater Rooms"
-    }
-})
+notifiers.Rooms:AddToggle("DangerousNotifier", { Text = "Dangerous Room Notifier" })
 
 library:GiveSignal(workspace.ChildAdded:Connect(function(child)
     local roomNumber = getgenv().Utils.GetCurrentRoomNumber()
@@ -300,20 +274,8 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
         getgenv().Alert("Turrets will spawn in the next room.")
     end
 
-    local values = options.SpecialRoomNotifier.Value
-
-    if values then
-        if values["Dangerous Rooms"] and room:WaitForChild("DamageParts") and room.DamageParts:WaitForChild("Pit") then
-            getgenv().Alert("The next room is dangerous. Be careful as you enter!")
-        elseif values["Heavy Containment"] and room.Name == "HCCheckpointStart" then
-            getgenv().Alert("You are about to enter heavy containment!")
-        elseif values["Searchlight Encounters"] and string.match(room.Name, "SearchlightsStart") then
-            getgenv().Alert("You are about to enter the searchlights encounter. Good luck!")
-        elseif values["Trenches"] and string.match(room.Name, "Trench") then
-            getgenv().Alert("You are about to enter the trenches")
-        elseif values["Underwater Rooms"] and string.match(room.Name, "Flooded") then
-            getgenv().Alert("You are about to go underwater!")
-        end
+    if toggles.DangerousNotifier.Value and room:WaitForChild("DamageParts") and room.DamageParts:WaitForChild("Pit") then
+        getgenv().Alert("The next room is dangerous. Careful as you enter!")
     end
 
     if toggles.DoorsTracer.Value then
