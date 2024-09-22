@@ -257,9 +257,9 @@ notifiers.Rooms:AddDropdown("SpecialRoomNotifier", {
     Values = {
         "Dangerous Rooms",
         "Heavy Containment",
-        "Searchlights",
+        "Searchlight Encounters",
         "Trenches",
-        "Greenhouse"
+        "Underwater Rooms"
     }
 })
 
@@ -290,9 +290,9 @@ end))
 library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
     if child.Name ~= "Pixel" then return end
 
-    local friend = child:WaitForChild("ViewportFrame"):WaitForChild("ImaginaryFriend"):WaitForChild("Friend")
+    if not child:FindFirstChild("ViewportFrame") then return end
 
-    friend.Transparency = 1
+    child.ViewportFrame.ImaginaryFriend.Friend.Transparency = 1
 end))
 
 library:GiveSignal(rooms.ChildAdded:Connect(function(room)
@@ -303,16 +303,16 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
     local values = options.SpecialRoomNotifier.Value
 
     if values then
-        if values[1] and room:WaitForChild("DamageParts") and room.DamageParts:WaitForChild("Pit") then
+        if values["Dangerous Rooms"] and room:WaitForChild("DamageParts") and room.DamageParts:WaitForChild("Pit") then
             getgenv().Alert("The next room is dangerous. Be careful as you enter!")
-        elseif values[2] and room.Name == "HCCheckpointStart" then
+        elseif values["Heavy Containment"] and room.Name == "HCCheckpointStart" then
             getgenv().Alert("You are about to enter heavy containment!")
-        elseif values[3] and string.match(room.Name, "SearchlightsIntro") then
+        elseif values["Searchlight Encounters"] and string.match(room.Name, "SearchlightsStart") then
             getgenv().Alert("You are about to enter the searchlights encounter. Good luck!")
-        elseif values[4] and string.match(room.Name, "Trench") then
+        elseif values["Trenches"] and string.match(room.Name, "Trench") then
             getgenv().Alert("You are about to enter the trenches")
-        elseif values[5] and string.match(room.Name, "Grass") then
-            getgenv().Alert("You are about to enter the greenhouse")
+        elseif values["Underwater Rooms"] and string.match(room.Name, "Flooded") then
+            getgenv().Alert("You are about to go underwater!")
         end
     end
 
