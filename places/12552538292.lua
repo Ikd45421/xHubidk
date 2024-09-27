@@ -137,11 +137,6 @@ main.Sound:AddToggle("NoAnticipationMusic", {
     end
 })
 
-main.Exploits:AddToggle("LessLag", {
-    Text = "Performance Increase",
-    Tooltip = "Just a few optimisations"
-})
-
 main.Exploits:AddButton({
     Text = "Play Again",
     DoubleClick = true,
@@ -243,10 +238,6 @@ notifiers.Rooms:AddToggle("DangerousNotifier", { Text = "Dangerous Room Notifier
 notifiers.Rooms:AddToggle("RareRoomNotifier", { Text = "Rare Room Notifier" })
 
 library:GiveSignal(workspace.ChildAdded:Connect(function(child)
-    if toggles.LessLag.Value and child.Name == "VentCover" then
-        task.delay(.1, child.Destroy)
-    end
-
     local roomNumber = repStorage.Events.CurrentRoomNumber:InvokeServer()
 
     if roomNumber == 100 then return end
@@ -269,16 +260,7 @@ library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
         getgenv().Alert("A Wall Dweller has spawned somewhere in the walls. Find it!")
 
         if toggles.WallDwellerESP.Value then
-            ESPLib.ESP.Outline({
-                Name = "Wall Dweller",
-                Model = monster,
-                SurfaceColor = Color3.fromRGB(255, 0, 0),
-                BorderColor = Color3.fromRGB(0, 255, 0),
-                TextColor = Color3.fromRGB(0, 0, 255),
-                Tracer = {
-
-                }
-            })
+            -- Outline
         end
     end
 end))
@@ -302,13 +284,6 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
 
     if toggles.DangerousNotifier.Value and room:WaitForChild("DamageParts", .5) and room.DamageParts:WaitForChild("Pit", .5) then
         getgenv().Alert("The next room is dangerous. Careful as you enter!")
-    end
-
-    if toggles.DoorESP.Value then
-        local entrances = room:WaitForChild("Entrances")
-        local door = entrances:WaitForChild("NormalDoor"):WaitForChild("Door")
-
-        -- OUTLINES
     end
 end))
 
