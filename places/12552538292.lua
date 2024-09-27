@@ -328,6 +328,7 @@ esp.Interactables:AddDivider()
 esp.Interactables:AddDropdown("InteractableESPList", {
     Text = "Interactables List",
     AllowNull = true,
+    Multi = true,
     Values = {
         "Items",
         "Documents",
@@ -353,6 +354,7 @@ esp.Entities:AddDivider()
 esp.Entities:AddDropdown("EntityESPList", {
     Text = "Entity List",
     AllowNull = true,
+    Multi = true,
     Values = {
         "Node Monsters",
         "Pandemonium",
