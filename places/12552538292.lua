@@ -107,9 +107,7 @@ main.Interaction:AddToggle("AutoInteract", {
     Mode = "Hold"
 })
 
-main.Interaction:AddToggle("AutoGenerator", {
-    Text = "Auto Searchlights Generator"
-})
+main.Interaction:AddToggle("AutoGenerator", { Text = "Auto Searchlights Generator", Risky = true })
 
 main.Sound:AddToggle("NoAmbience", {
     Text = "Mute Ambience",
@@ -383,42 +381,42 @@ esp.Players:AddToggle("PlayerESPDistance", { Text = "Distance", Risky = true })
 esp.Players:AddToggle("PlayerESPTracer", { Text = "Tracer", Risky = true })
 
 esp.Colours:AddColorPicker("ItemColour", {
-    Text = "Items",
+    Title = "Items",
     Default = Color3.fromRGB(0, 255, 0)
 })
 
 esp.Colours:AddColorPicker("DocumentColour", {
-    Text = "Documents",
+    Title = "Documents",
     Default = Color3.fromRGB(255, 0, 0)
 })
 
 esp.Colours:AddColorPicker("KeycardColour", {
-    Text = "Keycards",
+    Title = "Keycards",
     Default = Color3.fromRGB(255, 127, 0)
 })
 
 esp.Colours:AddColorPicker("MoneyColour", {
-    Text = "Money",
+    Title = "Money",
     Default = Color3.fromRGB(255, 255, 0)
 })
 
 esp.Colours:AddColorPicker("DoorColour", {
-    Text = "Doors",
+    Title = "Doors",
     Default = Color3.fromRGB(0, 255, 0)
 })
 
 esp.Colours:AddColorPicker("GeneratorColour", {
-    Text = "Generators (Boss Rooms)",
+    Title = "Generators (Boss Rooms)",
     Default = Color3.fromRGB(0, 255, 255)
 })
 
 esp.Colours:AddColorPicker("EntityColour", {
-    Text = "Entities",
+    Title = "Entities",
     Default = Color3.fromRGB(0, 0, 255)
 })
 
 esp.Colours:AddColorPicker("PlayerColour", {
-    Text = "Players",
+    Title = "Players",
     Default = Color3.fromRGB(255, 255, 255)
 })
 
