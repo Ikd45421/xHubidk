@@ -47,14 +47,8 @@ local nodeMonsters = {
     "RidgeBlitz"
 }
 
-local activeESPs = {
-    Item = {},
-    Entity = {},
-    Other = {}
-}
-
 local window = library:CreateWindow({
-    Title = "xHub - " + player.DisplayName,
+    Title = "xHub",
     Center = true,
     AutoShow = true
 })
