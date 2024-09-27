@@ -380,43 +380,35 @@ esp.Players:AddToggle("PlayerESPDistance", { Text = "Distance", Risky = true })
 
 esp.Players:AddToggle("PlayerESPTracer", { Text = "Tracer", Risky = true })
 
-esp.Colours:AddColorPicker("ItemColour", {
-    Title = "Items",
+esp.Colours:AddLabel("Items"):AddColorPicker("ItemColour", {
     Default = Color3.fromRGB(0, 255, 0)
 })
 
-esp.Colours:AddColorPicker("DocumentColour", {
-    Title = "Documents",
+esp.Colours:AddLabel("Documents"):AddColorPicker("DocumentColour", {
     Default = Color3.fromRGB(255, 0, 0)
 })
 
-esp.Colours:AddColorPicker("KeycardColour", {
-    Title = "Keycards",
+esp.Colours:AddLabel("Keycards"):AddColorPicker("KeycardColour", {
     Default = Color3.fromRGB(255, 127, 0)
 })
 
-esp.Colours:AddColorPicker("MoneyColour", {
-    Title = "Money",
+esp.Colours:AddLabel("Money"):AddColorPicker("MoneyColour", {
     Default = Color3.fromRGB(255, 255, 0)
 })
 
-esp.Colours:AddColorPicker("DoorColour", {
-    Title = "Doors",
+esp.Colours:AddLabel("Doors"):AddColorPicker("DoorColour", {
     Default = Color3.fromRGB(0, 255, 0)
 })
 
-esp.Colours:AddColorPicker("GeneratorColour", {
-    Title = "Generators (Boss Rooms)",
+esp.Colours:AddLabel("Generators"):AddColorPicker("GeneratorColour", {
     Default = Color3.fromRGB(0, 255, 255)
 })
 
-esp.Colours:AddColorPicker("EntityColour", {
-    Title = "Entities",
+esp.Colours:AddLabel("Entities"):AddColorPicker("EntityColour", {
     Default = Color3.fromRGB(0, 0, 255)
 })
 
-esp.Colours:AddColorPicker("PlayerColour", {
-    Title = "Players",
+esp.Colours:AddLabel("Players"):AddColorPicker("PlayerColour", {
     Default = Color3.fromRGB(255, 255, 255)
 })
 
