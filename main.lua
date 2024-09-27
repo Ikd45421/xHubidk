@@ -4,6 +4,7 @@ local foundGame = false
 local linoriaLib = "https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/"
 local addons = linoriaLib .. "addons/"
 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/deividcomsono/MS-ESP/refs/heads/main/source.lua"))()
 loadstring(game:HttpGet(linoriaLib .. 'Library.lua'))()
 getgenv().ThemeManager = loadstring(game:HttpGet(addons .. 'ThemeManager.lua'))()
 getgenv().SaveManager = loadstring(game:HttpGet(addons .. 'SaveManager.lua'))()

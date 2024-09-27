@@ -18,10 +18,15 @@ local proximityPromptService = game:GetService("ProximityPromptService")
 local rooms = workspace:WaitForChild("Rooms")
 local monsters = workspace:WaitForChild("Monsters")
 
+local ESPLib = getgenv().mstudio45.ESPLibrary
 local themes = getgenv().ThemeManager
 local saves = getgenv().SaveManager
 local options = getgenv().Linoria.Options
 local toggles = getgenv().Linoria.Toggles
+
+ESPLib:SetPrefix("xHub")
+ESPLib:SetIsLoggingEnabled(true)
+ESPLib:SetDebugEnabled(true)
 
 local player = players.LocalPlayer
 local playerGui = player.PlayerGui
@@ -42,25 +47,11 @@ local nodeMonsters = {
     "RidgeBlitz"
 }
 
-local function createNormalOutline(part, color)
-    local highlight = Instance.new("Highlight")
-    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    highlight.Enabled = true
-    highlight.FillTransparency = 1
-    highlight.OutlineColor = color
-    highlight.OutlineTransparency = 0
-    highlight.Parent = part
-end
-
-local function createItemOutline(part, color)
-    local highlight = Instance.new("Highlight")
-    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    highlight.Enabled = true
-    highlight.FillColor = color
-    highlight.FillTransparency = 0.25
-    highlight.OutlineTransparency = 1
-    highlight.Parent = part
-end
+local activeESPs = {
+    Item = {},
+    Entity = {},
+    Other = {}
+}
 
 local window = library:CreateWindow({
     Title = "xHub - " + player.DisplayName,
@@ -73,7 +64,7 @@ local tabs = {
     Visual = window:AddTab("Visual"),
     Entity = window:AddTab("Entity"),
     Notifiers = window:AddTab("Notifiers"),
-    Tracers = window:AddTab("Tracers"),
+    ESP = window:AddTab("ESP"),
     Settings = window:AddTab("Settings")
 }
 
@@ -285,8 +276,17 @@ library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
     if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
         getgenv().Alert("A Wall Dweller has spawned somewhere in the walls. Find it!")
 
-        if toggles.WallDwellerTracer.Value then
-            createNormalOutline(monster, options.WallDwellerTracerColor.Value)
+        if toggles.WallDwellerESP.Value then
+            ESPLib.ESP.Outline({
+                Name = "Wall Dweller",
+                Model = monster,
+                SurfaceColor = Color3.fromRGB(255, 0, 0),
+                BorderColor = Color3.fromRGB(0, 255, 0),
+                TextColor = Color3.fromRGB(0, 0, 255),
+                Tracer = {
+
+                }
+            })
         end
     end
 end))
@@ -312,52 +312,125 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
         getgenv().Alert("The next room is dangerous. Careful as you enter!")
     end
 
-    if toggles.DoorsTracer.Value then
+    if toggles.DoorESP.Value then
         local entrances = room:WaitForChild("Entrances")
         local door = entrances:WaitForChild("NormalDoor"):WaitForChild("Door")
 
-        createNormalOutline(door, options.DoorsTracerColor.Value)
+        -- OUTLINES
     end
 end))
 
 ------------------------------------------------
 
-local tracers = {
-    Items = tabs.Tracers:AddRightGroupbox("Items"),
-    Entities = tabs.Tracers:AddLeftGroupbox("Entities"),
-    Other = tabs.Tracers:AddLeftGroupbox("Other")
+local esp = {
+    Interactables = tabs.ESP:AddLeftGroupbox("Interactables"),
+    Entities = tabs.ESP:AddLeftGroupbox("Entities"),
+    Players = tabs.ESP:AddRightGroupbox("Players"),
+    Colours = tabs.ESP:AddRightGroupbox("Colours")
 }
 
-tracers.Items:AddToggle("ItemsTracer", { Text = "Items", Risky = true })
+esp.Interactables:AddToggle("InteractableESP", { Text = "Enabled", Risky = true })
 
-tracers.Items:AddToggle("DocumentsTracers", { Text = "Documents", Risky = true })
+esp.Interactables:AddDivider()
 
-tracers.Items:AddToggle("KeycardsTracer", { Text = "Keycards", Risky = true })
+esp.Interactables:AddDropdown("InteractableESPList", {
+    Text = "Interactables List",
+    AllowNull = true,
+    Values = {
+        "Items",
+        "Documents",
+        "Keycards",
+        "Money",
+        "Doors",
+        "Generators"
+    }
+})
 
-tracers.Items:AddToggle("MoneyTracer", { Text = "Money", Risky = true })
+esp.Interactables:AddDivider()
 
-tracers.Entities:AddToggle("PlayersTracer", { Text = "Players", Risky = true })
+esp.Interactables:AddToggle("InteractableESPName", { Text = "Name", Risky = true })
 
-tracers.Entities:AddToggle("NodeMonstersTracer", { Text = "Node Monsters", Risky = true })
+esp.Interactables:AddToggle("InteractableESPDistance", { Text = "Distance", Risky = true })
 
-tracers.Entities:AddToggle("PandemoniumTracer", { Text = "Pandemonium", Risky = true })
+esp.Interactables:AddToggle("InteractableESPTracer", { Text = "Tracers", Risky = true })
 
-tracers.Entities:AddToggle("WallDwellerTracer", {
-    Text = "Wall Dwellers"
-}):AddColorPicker("WallDwellerTracerColor", {
+esp.Entities:AddToggle("EntityESP", { Text = "Enabled", Risky = true })
+
+esp.Entities:AddDivider()
+
+esp.Entities:AddDropdown("EntityESPList", {
+    Text = "Entity List",
+    AllowNull = true,
+    Values = {
+        "Node Monsters",
+        "Pandemonium",
+        "Wall Dwellers",
+        "Eyefestation",
+        "Searchlights"
+    }
+})
+
+esp.Entities:AddDivider()
+
+esp.Entities:AddToggle("EntityESPName", { Text = "Name", Risky = true })
+
+esp.Entities:AddToggle("EntityESPDistance", { Text = "Distance", Risky = true })
+
+esp.Entities:AddToggle("EntityESPTracer", { Text = "Tracer", Risky = true })
+
+esp.Players:AddToggle("PlayerESP", { Text = "Enabled", Risky = true })
+
+esp.Players:AddDivider()
+
+esp.Players:AddToggle("PlayerESPName", { Text = "Name", Risky = true })
+
+esp.Players:AddToggle("PlayerESPDistance", { Text = "Distance", Risky = true })
+
+esp.Players:AddToggle("PlayerESPTracer", { Text = "Tracer", Risky = true })
+
+esp.Colours:AddColorPicker("ItemColour", {
+    Text = "Items",
+    Default = Color3.fromRGB(0, 255, 0)
+})
+
+esp.Colours:AddColorPicker("DocumentColour", {
+    Text = "Documents",
+    Default = Color3.fromRGB(255, 0, 0)
+})
+
+esp.Colours:AddColorPicker("KeycardColour", {
+    Text = "Keycards",
+    Default = Color3.fromRGB(255, 127, 0)
+})
+
+esp.Colours:AddColorPicker("MoneyColour", {
+    Text = "Money",
+    Default = Color3.fromRGB(255, 255, 0)
+})
+
+esp.Colours:AddColorPicker("DoorColour", {
+    Text = "Doors",
+    Default = Color3.fromRGB(0, 255, 0)
+})
+
+esp.Colours:AddColorPicker("GeneratorColour", {
+    Text = "Generators (Boss Rooms)",
+    Default = Color3.fromRGB(0, 255, 255)
+})
+
+esp.Colours:AddColorPicker("EntityColour", {
+    Text = "Entities",
     Default = Color3.fromRGB(0, 0, 255)
 })
 
-tracers.Entities:AddToggle("EyefestationTracer", { Text = "Eyefestation", Risky = true })
+esp.Colours:AddColorPicker("PlayerColour", {
+    Text = "Players",
+    Default = Color3.fromRGB(255, 255, 255)
+})
 
-tracers.Entities:AddToggle("SearchlightsTracer", { Text = "Searchlights", Risky = true })
-
-tracers.Other:AddToggle("GeneratorsTracer", { Text = "Generators", Risky = true })
-
-tracers.Other:AddToggle("DoorsTracer", {
-    Text = "Doors"
-}):AddColorPicker("DoorsTracerColor", {
-    Default = Color3.fromRGB(255, 0, 0)
+esp.Colours:AddToggle("RainbowESP", {
+    Text = "Rainbow ESP",
+    Callback = function(value) ESPLib.Rainbow.Set(value) end
 })
 
 ------------------------------------------------
@@ -447,7 +520,7 @@ library.ToggleKeybind = options.MenuKeybind
 
 library:OnUnload(function()
     getgenv().Alert("Unloading!")
-    lighting.Ambient = Color3.fromRGB(40, 53, 65)
+    ESPLib.ESP.Clear()
     getgenv().Alert = nil
     getgenv().xhub_loaded = nil
 end)
