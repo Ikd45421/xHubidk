@@ -391,6 +391,7 @@ esp.Colours:AddLabel("Players"):AddColorPicker("PlayerColour", {
 
 esp.Colours:AddToggle("RainbowESP", {
     Text = "Rainbow ESP",
+    Risky = true,
     Callback = function(value) ESPLib.Rainbow.Set(value) end
 })
 
