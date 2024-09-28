@@ -49,6 +49,8 @@ local nodeMonsters = {
 }
 
 local function setupMonsterESP(monster)
+    if not toggles.EntityESP.Value then return end
+
     ESPLib.ESP.Highlight({
         Name = string.gsub(monster.Name, "Ridge", ""),
         Model = monster,
@@ -251,6 +253,10 @@ notifiers.Entity:AddToggle("EyefestationNotifier", { Text = "Eyefestation Notifi
 
 notifiers.Rooms:AddToggle("TurretNotifier", { Text = "Turret Notifier" })
 
+notifiers.Rooms:AddToggle("GauntletNotifier", { Text = "Guantlet Notifier" })
+
+notifiers.Rooms:AddToggle("PuzzleNotifier", { Text = "Puzzle Room Notifier" })
+
 notifiers.Rooms:AddToggle("DangerousNotifier", { Text = "Dangerous Room Notifier" })
 
 notifiers.Rooms:AddToggle("RareRoomNotifier", { Text = "Rare Room Notifier" })
@@ -278,7 +284,8 @@ esp.Interactables:AddDropdown("InteractableESPList", {
         "Keycards",
         "Money",
         "Doors",
-        "Generators"
+        "Generators",
+        "Turret Controls"
     }
 })
 
@@ -289,6 +296,10 @@ esp.Interactables:AddToggle("InteractableESPName", { Text = "Name", Risky = true
 esp.Interactables:AddToggle("InteractableESPDistance", { Text = "Distance", Risky = true })
 
 esp.Interactables:AddToggle("InteractableESPTracer", { Text = "Tracers", Risky = true })
+
+esp.Interactables:AddToggle("EntityESP", { Text = "Enabled" })
+
+esp.Interactables:AddDivider()
 
 esp.Entities:AddDropdown("EntityESPList", {
     Text = "Entity List",
@@ -370,17 +381,25 @@ library:GiveSignal(workspace.ChildAdded:Connect(function(child)
     if roomNumber == 100 then return end
 
     if toggles.NodeMonsterNotifier.Value then
-        for _, monster in ipairs(nodeMonsters) do
-            if child.Name == monster then
-                getgenv().Alert(string.gsub(monster, "Ridge", "") .. " spawned. Hide!")
+        for _, monsterName in ipairs(nodeMonsters) do
+            if child.Name == monsterName then
+                local name = string.gsub(monsterName, "Ridge", "")
 
-                setupMonsterESP(child)
+                getgenv().Alert(name .. " spawned. Hide!")
+
+                if options.EntityESPList.Value[name] then
+                    setupMonsterESP(child)
+                end
             end
         end
     end
 
     if toggles.PandemoniumNotifier.Value and child.Name == "Pandemonium" then
         getgenv().Alert("Pandemonium spawned. Good luck!")
+
+        if options.EntityESPList.Value["Pandemonium"] then
+            setupMonsterESP(child)
+        end
     end
 
     if toggles.LessLag.Value and child.Name == "VentCover" then
@@ -393,7 +412,7 @@ library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
         getgenv().Alert("A Wall Dweller has spawned in the walls. Find it!")
     end
 
-    if options.EntityESPList["Wall Dweller"] then setupMonsterESP(monster) end
+    if options.EntityESPList.Value["Wall Dweller"] then setupMonsterESP(monster) end
 end))
 
 library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
@@ -410,7 +429,15 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
     end
 
     if toggles.TurretNotifier.Value and string.match(room.Name, "Turret") then
-        getgenv().Alert("Turrets will spawn in the next room.")
+        getgenv().Alert("Turrets will spawn in the next room!")
+    end
+
+    if toggles.GauntletNotifier.Value and string.match(room.Name, "Gauntlet") then
+        getgenv().Already("The next room is a gauntlet. Good luck!")
+    end
+
+    if toggles.PuzzleNotifier.Value and string.match(room.Name, "PipeBoardPuzzle") then
+        getgenv().Alert("The next room is a puzzle!")
     end
 
     if toggles.DangerousNotifier.Value and room:WaitForChild("DamageParts", .5) and room.DamageParts:WaitForChild("Pit", .5) then
