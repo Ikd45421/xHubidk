@@ -99,8 +99,8 @@ main.Movement:AddSlider("SpeedBoost", {
     Rounding = 0
 })
 
-main.Movement:AddSlider("JumpPower", {
-    Text = "JumpPower",
+main.Movement:AddSlider("JumpHeight", {
+    Text = "Jump Height",
     Default = 0,
     Min = 0,
     Max = 20,
@@ -456,7 +456,7 @@ end))
 library:GiveSignal(userInputService.InputBegan:Connect(function(input, processed)
     if processed then return end
 
-    if options.JumpPower.Value ~= 0 and input.KeyCode == Enum.KeyCode.Space then
+    if options.JumpHeight.Value ~= 0 and input.KeyCode == Enum.KeyCode.Space then
         player.Crouching.Value = false
     end
 end))
@@ -524,7 +524,7 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
 
     humanoid.WalkSpeed = 16 + options.SpeedBoost.Value
 
-    humanoid.JumpPower = options.JumpPower.Value
+    humanoid.JumpHeight = options.JumpHeight.Value
 end))
 
 ------------------------------------------------
