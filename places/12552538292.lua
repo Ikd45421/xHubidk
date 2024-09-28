@@ -297,9 +297,9 @@ esp.Interactables:AddToggle("InteractableESPDistance", { Text = "Distance", Risk
 
 esp.Interactables:AddToggle("InteractableESPTracer", { Text = "Tracers", Risky = true })
 
-esp.Interactables:AddToggle("EntityESP", { Text = "Enabled" })
+esp.Entities:AddToggle("EntityESP", { Text = "Enabled" })
 
-esp.Interactables:AddDivider()
+esp.Entities:AddDivider()
 
 esp.Entities:AddDropdown("EntityESPList", {
     Text = "Entity List",
