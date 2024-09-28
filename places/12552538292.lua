@@ -455,8 +455,12 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
         end
     end
 
-    if toggles.ThirdPerson.Value and options.ThirdPersonKey:GetState() then
-        camera.CFrame = camera.CFrame * CFrame.new(1.5, -0.5, 6.5)
+    if character.Parent.Name == "Characters" then
+        if toggles.ThirdPerson.Value and options.ThirdPersonKey:GetState() then
+            camera.CFrame = camera.CFrame * CFrame.new(1.5, -0.5, 6.5)
+        end
+
+        camera.FieldOfView = options.FieldOfView.Value
     end
 
     if toggles.AutoGenerator.Value then
@@ -477,13 +481,7 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
         end)
     end
 
-    local speedBoost = options.SpeedBoost.Value
-
-    if speedBoost ~= 0 then humanoid.WalkSpeed = 16 + speedBoost end
-
-    local fov = options.FieldOfView.Value
-
-    if fov ~= 70 and character.Parent.Name == "Characters" then camera.FieldOfView = fov end
+    humanoid.WalkSpeed = 16 + options.SpeedBoost.Value
 end))
 
 ------------------------------------------------
