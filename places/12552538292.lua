@@ -409,7 +409,7 @@ library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
 end))
 
 library:GiveSignal(rooms.ChildAdded:Connect(function(room)
-    if toggles.RareRoomNotifier.Value and room.Name == "ValculaVoidMass" | "Mindscape" then
+    if toggles.RareRoomNotifier.Value and (room.Name == "ValculaVoidMass" or room.Name == "Mindscape") then
         getgenv().Alert("The next room is rare!")
     end
 
