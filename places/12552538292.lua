@@ -456,7 +456,7 @@ end))
 library:GiveSignal(userInputService.InputBegan:Connect(function(input, processed)
     if processed then return end
 
-    if input.KeyCode == Enum.KeyCode.Space then
+    if options.JumpPower.Value ~= 0 and input.KeyCode == Enum.KeyCode.Space then
         player.Crouching.Value = false
     end
 end))
