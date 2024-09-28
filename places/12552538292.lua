@@ -436,8 +436,12 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
         getgenv().Alert("The next room is a puzzle!")
     end
 
-    if toggles.DangerousNotifier.Value and room:WaitForChild("DamageParts", .5) and room.DamageParts:WaitForChild("Pit", .5) then
-        getgenv().Alert("The next room is dangerous. Careful as you enter!")
+    if toggles.DangerousNotifier.Value then
+        local parent = room:FindFirstChild("DamageParts") or room:FindFirstChild("DamagePart")
+
+        if parent and (parent:FindFirstChild("Electricity") or parent:FindFirstChild("Pit")) then
+            getgenv().Alert("The next room is dangerous. Careful as you enter!")
+        end
     end
 end))
 
