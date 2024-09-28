@@ -50,7 +50,7 @@ local nodeMonsters = {
 
 local function setupMonsterESP(monster)
     ESPLib.ESP.Highlight({
-        Name = monster.Name,
+        Name = string.gsub(monster.Name, "Ridge", ""),
         Model = monster,
         FillColor = options.EntityColour.Value,
         OutlineColor = options.EntityColour.Value,
@@ -290,10 +290,6 @@ esp.Interactables:AddToggle("InteractableESPDistance", { Text = "Distance", Risk
 
 esp.Interactables:AddToggle("InteractableESPTracer", { Text = "Tracers", Risky = true })
 
-esp.Entities:AddToggle("EntityESP", { Text = "Enabled", Risky = true })
-
-esp.Entities:AddDivider()
-
 esp.Entities:AddDropdown("EntityESPList", {
     Text = "Entity List",
     AllowNull = true,
@@ -302,18 +298,17 @@ esp.Entities:AddDropdown("EntityESPList", {
         "Node Monsters",
         "Pandemonium",
         "Wall Dwellers",
-        "Eyefestation",
-        "Searchlights"
+        "Eyefestation"
     }
 })
 
 esp.Entities:AddDivider()
 
-esp.Entities:AddToggle("EntityESPName", { Text = "Name", Risky = true })
+esp.Entities:AddToggle("EntityESPName", { Text = "Name" })
 
-esp.Entities:AddToggle("EntityESPDistance", { Text = "Distance", Risky = true })
+esp.Entities:AddToggle("EntityESPDistance", { Text = "Distance" })
 
-esp.Entities:AddToggle("EntityESPTracer", { Text = "Tracer", Risky = true })
+esp.Entities:AddToggle("EntityESPTracer", { Text = "Tracer" })
 
 esp.Players:AddToggle("PlayerESP", { Text = "Enabled", Risky = true })
 
@@ -359,7 +354,6 @@ esp.Colours:AddLabel("Players"):AddColorPicker("PlayerColour", {
 
 esp.Colours:AddToggle("RainbowESP", {
     Text = "Rainbow ESP",
-    Risky = true,
     Callback = function(value) ESPLib.Rainbow.Set(value) end
 })
 
