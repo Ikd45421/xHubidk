@@ -128,7 +128,7 @@ main.Interaction:AddToggle("AutoInteract", {
     Mode = "Hold"
 })
 
-main.Interaction:AddToggle("AutoGenerator", { Text = "Auto Searchlights Generator", Risky = true })
+main.Interaction:AddToggle("AutoGenerator", { Text = "Auto Searchlights Generator" })
 
 main.Sound:AddToggle("NoAmbience", {
     Text = "Mute Ambience",
