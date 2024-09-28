@@ -379,6 +379,8 @@ library:GiveSignal(workspace.ChildAdded:Connect(function(child)
         for _, monster in ipairs(nodeMonsters) do
             if child.Name == monster then
                 getgenv().Alert(string.gsub(monster, "Ridge", "") .. " spawned. Hide!")
+
+                setupMonsterESP(child)
             end
         end
     end
