@@ -381,15 +381,11 @@ library:GiveSignal(workspace.ChildAdded:Connect(function(child)
     if roomNumber == 100 then return end
 
     if toggles.NodeMonsterNotifier.Value then
-        for _, monsterName in ipairs(nodeMonsters) do
-            if child.Name == monsterName then
-                local name = string.gsub(monsterName, "Ridge", "")
+        for _, monster in ipairs(nodeMonsters) do
+            if child.Name == monster then
+                getgenv().Alert(string.gsub(monster, "Ridge", "") .. " spawned. Hide!")
 
-                getgenv().Alert(name .. " spawned. Hide!")
-
-                if options.EntityESPList.Value[name] then
-                    setupMonsterESP(child)
-                end
+                if options.EntityESPList.Value["Node Monsters"] then setupMonsterESP(child) end
             end
         end
     end
@@ -412,7 +408,7 @@ library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
         getgenv().Alert("A Wall Dweller has spawned in the walls. Find it!")
     end
 
-    if options.EntityESPList.Value["Wall Dweller"] then setupMonsterESP(monster) end
+    if options.EntityESPList.Value["Wall Dwellers"] then setupMonsterESP(monster) end
 end))
 
 library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
@@ -436,7 +432,7 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
         getgenv().Already("The next room is a gauntlet. Good luck!")
     end
 
-    if toggles.PuzzleNotifier.Value and string.match(room.Name, "PipeBoardPuzzle") then
+    if toggles.PuzzleNotifier.Value and (string.match(room.Name, "PipeBoardPuzzle") or string.match(room.Name, "SteamPuzzle")) then
         getgenv().Alert("The next room is a puzzle!")
     end
 
