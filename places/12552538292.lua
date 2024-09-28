@@ -556,6 +556,7 @@ library:OnUnload(function()
     ESPLib.ESP.Clear()
     getgenv().Alert = nil
     getgenv().xhub_loaded = nil
+    task.wait(.5)
 end)
 
 themes:SetLibrary(library)
