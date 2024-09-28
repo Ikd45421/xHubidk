@@ -1,3 +1,4 @@
+--// SETUP \\--
 local library = getgenv().Library
 
 if not getgenv().xhub_loaded then
@@ -7,7 +8,7 @@ else
     return
 end
 
--- SERVICES --
+--// SERVICES \\--
 local workspace = game:GetService("Workspace")
 local lighting = game:GetService("Lighting")
 local players = game:GetService("Players")
@@ -47,6 +48,24 @@ local nodeMonsters = {
     "RidgeBlitz"
 }
 
+local function setupMonsterESP(monster)
+    ESPLib.ESP.Highlight({
+        Name = monster.Name,
+        Model = monster,
+        FillColor = options.EntityColour.Value,
+        OutlineColor = options.EntityColour.Value,
+        TextColor = options.EntityColour.Value,
+        TextSize = 16,
+
+        Tracer = {
+            Enabled = toggles.EntityESPTracer.Value,
+            From = "Bottom",
+            Color = options.EntityColour.Value
+        }
+    })
+end
+
+--// UI \\--
 local window = library:CreateWindow({
     Title = "xHub",
     Center = true,
@@ -137,6 +156,11 @@ main.Sound:AddToggle("NoAnticipationMusic", {
     end
 })
 
+main.Exploits:AddToggle("LessLag", {
+    Text = "Performance Increase",
+    Tooltip = "Just a few optimisations"
+})
+
 main.Exploits:AddButton({
     Text = "Play Again",
     DoubleClick = true,
@@ -149,12 +173,6 @@ main.Exploits:AddButton({
         end
     end
 })
-
-library:GiveSignal(proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
-    if not toggles.InstantInteract.Value then return end
-
-    fireproximityprompt(prompt)
-end))
 
 ------------------------------------------------
 
@@ -236,56 +254,6 @@ notifiers.Rooms:AddToggle("TurretNotifier", { Text = "Turret Notifier" })
 notifiers.Rooms:AddToggle("DangerousNotifier", { Text = "Dangerous Room Notifier" })
 
 notifiers.Rooms:AddToggle("RareRoomNotifier", { Text = "Rare Room Notifier" })
-
-library:GiveSignal(workspace.ChildAdded:Connect(function(child)
-    local roomNumber = repStorage.Events.CurrentRoomNumber:InvokeServer()
-
-    if roomNumber == 100 then return end
-
-    if toggles.NodeMonsterNotifier.Value then
-        for _, monster in ipairs(nodeMonsters) do
-            if child.Name == monster then
-                getgenv().Alert(string.gsub(monster, "Ridge", "") .. " spawned. Hide!")
-            end
-        end
-    end
-
-    if toggles.PandemoniumNotifier.Value and child.Name == "Pandemonium" then
-        getgenv().Alert("Pandemonium spawned. Good luck!")
-    end
-end))
-
-library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
-    if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
-        getgenv().Alert("A Wall Dweller has spawned somewhere in the walls. Find it!")
-
-        if toggles.WallDwellerESP.Value then
-            -- Outline
-        end
-    end
-end))
-
-library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
-    if child.Name ~= "Pixel" then return end
-
-    if not child:FindFirstChild("ViewportFrame") then return end
-
-    child.ViewportFrame.ImaginaryFriend.Friend.Transparency = 1
-end))
-
-library:GiveSignal(rooms.ChildAdded:Connect(function(room)
-    if toggles.RareRoomNotifier.Value and room.Name == "ValculaVoidMass" then
-        getgenv().Alert("The next room is rare!")
-    end
-
-    if toggles.TurretNotifier.Value and string.match(room.Name, "Turret") then
-        getgenv().Alert("Turrets will spawn in the next room.")
-    end
-
-    if toggles.DangerousNotifier.Value and room:WaitForChild("DamageParts", .5) and room.DamageParts:WaitForChild("Pit", .5) then
-        getgenv().Alert("The next room is dangerous. Careful as you enter!")
-    end
-end))
 
 ------------------------------------------------
 
@@ -395,7 +363,64 @@ esp.Colours:AddToggle("RainbowESP", {
     Callback = function(value) ESPLib.Rainbow.Set(value) end
 })
 
-------------------------------------------------
+--// FUNCTIONS \\--
+library:GiveSignal(proximityPromptService.PromptButtonHoldBegan:Connect(function(prompt)
+    if not toggles.InstantInteract.Value then return end
+
+    fireproximityprompt(prompt)
+end))
+
+library:GiveSignal(workspace.ChildAdded:Connect(function(child)
+    local roomNumber = repStorage.Events.CurrentRoomNumber:InvokeServer()
+
+    if roomNumber == 100 then return end
+
+    if toggles.NodeMonsterNotifier.Value then
+        for _, monster in ipairs(nodeMonsters) do
+            if child.Name == monster then
+                getgenv().Alert(string.gsub(monster, "Ridge", "") .. " spawned. Hide!")
+            end
+        end
+    end
+
+    if toggles.PandemoniumNotifier.Value and child.Name == "Pandemonium" then
+        getgenv().Alert("Pandemonium spawned. Good luck!")
+    end
+
+    if toggles.LessLag.Value and child.Name == "VentCover" then
+        child:Destroy()
+    end
+end))
+
+library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
+    if toggles.WallDwellerNotifier.Value and monster.Name == "WallDweller" then
+        getgenv().Alert("A Wall Dweller has spawned in the walls. Find it!")
+    end
+
+    if options.EntityESPList["Wall Dweller"] then setupMonsterESP(monster) end
+end))
+
+library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
+    if child.Name ~= "Pixel" then return end
+
+    if not child:FindFirstChild("ViewportFrame") then return end
+
+    child.ViewportFrame.ImaginaryFriend.Friend.Transparency = 1
+end))
+
+library:GiveSignal(rooms.ChildAdded:Connect(function(room)
+    if toggles.RareRoomNotifier.Value and room.Name == "ValculaVoidMass" then
+        getgenv().Alert("The next room is rare!")
+    end
+
+    if toggles.TurretNotifier.Value and string.match(room.Name, "Turret") then
+        getgenv().Alert("Turrets will spawn in the next room.")
+    end
+
+    if toggles.DangerousNotifier.Value and room:WaitForChild("DamageParts", .5) and room.DamageParts:WaitForChild("Pit", .5) then
+        getgenv().Alert("The next room is dangerous. Careful as you enter!")
+    end
+end))
 
 library:GiveSignal(runService.RenderStepped:Connect(function()
     if toggles.NoAmbience.Value then
