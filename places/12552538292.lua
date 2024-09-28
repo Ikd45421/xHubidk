@@ -15,7 +15,6 @@ local players = game:GetService("Players")
 local repStorage = game:GetService("ReplicatedStorage")
 local runService = game:GetService("RunService")
 local proximityPromptService = game:GetService("ProximityPromptService")
-local userInputService = game:GetService("UserInputService")
 
 local rooms = workspace:WaitForChild("Rooms")
 local monsters = workspace:WaitForChild("Monsters")
@@ -450,14 +449,6 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
         if parent and (parent:FindFirstChild("Electricity") or parent:FindFirstChild("Pit")) then
             getgenv().Alert("The next room is dangerous. Careful as you enter!")
         end
-    end
-end))
-
-library:GiveSignal(userInputService.InputBegan:Connect(function(input, processed)
-    if processed then return end
-
-    if options.JumpHeight.Value ~= 0 and input.KeyCode == Enum.KeyCode.Space then
-        player.Crouching.Value = false
     end
 end))
 
