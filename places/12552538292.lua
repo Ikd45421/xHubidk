@@ -459,9 +459,11 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
     end
 
     if toggles.NoFootsteps.Value then
-        for _, child in next, character.LowerTorso:GetChildren() do
-            if child:IsA("Sound") then
-                child:Destroy()
+        for _, char in pairs(workspace.Characters:GetChildren()) do
+            for _, child in next, char.LowerTorso:GetChildren() do
+                if child:IsA("Sound") then
+                    child:Destroy()
+                end
             end
         end
     end
