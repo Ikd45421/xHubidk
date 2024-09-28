@@ -479,15 +479,11 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
 
     local speedBoost = options.SpeedBoost.Value
 
-    if speedBoost ~= 0 then
-        humanoid.WalkSpeed = 16 + speedBoost
-    end
+    if speedBoost ~= 0 then humanoid.WalkSpeed = 16 + speedBoost end
 
     local fov = options.FieldOfView.Value
 
-    if fov ~= 70 and character.Parent.Name == "Characters" then
-        camera.FieldOfView = fov
-    end
+    if fov ~= 70 and character.Parent.Name == "Characters" then camera.FieldOfView = fov end
 end))
 
 ------------------------------------------------
