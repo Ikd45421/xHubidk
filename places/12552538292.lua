@@ -541,8 +541,7 @@ settings.Menu:AddDivider()
 settings.Menu:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
     Text = "Menu Keybind",
     NoUI = true,
-    Default = "RightShift",
-    Callback = function(keybind) library.ToggleKeybind = keybind end
+    Default = "RightShift"
 })
 
 settings.Menu:AddButton("Unload", library.Unload)
