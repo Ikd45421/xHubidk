@@ -15,6 +15,7 @@ local players = game:GetService("Players")
 local repStorage = game:GetService("ReplicatedStorage")
 local runService = game:GetService("RunService")
 local proximityPromptService = game:GetService("ProximityPromptService")
+local userInputService = game:GetService("UserInputService")
 
 local rooms = workspace:WaitForChild("Rooms")
 local monsters = workspace:WaitForChild("Monsters")
@@ -95,8 +96,15 @@ main.Movement:AddSlider("SpeedBoost", {
     Default = 0,
     Min = 0,
     Max = 45,
-    Rounding = 0,
-    Callback = function(value) humanoid.WalkSpeed = 16 + value end
+    Rounding = 0
+})
+
+main.Movement:AddSlider("JumpPower", {
+    Text = "JumpPower",
+    Default = 0,
+    Min = 0,
+    Max = 20,
+    Rounding = 0
 })
 
 main.Movement:AddToggle("Noclip", {
@@ -429,7 +437,7 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
     end
 
     if toggles.GauntletNotifier.Value and string.match(room.Name, "Gauntlet") then
-        getgenv().Already("The next room is a gauntlet. Good luck!")
+        getgenv().Alert("The next room is a gauntlet. Good luck!")
     end
 
     if toggles.PuzzleNotifier.Value and (string.match(room.Name, "PipeBoardPuzzle") or string.match(room.Name, "SteamPuzzle")) then
@@ -442,6 +450,14 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
         if parent and (parent:FindFirstChild("Electricity") or parent:FindFirstChild("Pit")) then
             getgenv().Alert("The next room is dangerous. Careful as you enter!")
         end
+    end
+end))
+
+library:GiveSignal(userInputService.InputBegan:Connect(function(input, processed)
+    if processed then return end
+
+    if input.KeyCode == Enum.KeyCode.Space then
+        player.Crouching.Value = false
     end
 end))
 
@@ -507,6 +523,8 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
     end
 
     humanoid.WalkSpeed = 16 + options.SpeedBoost.Value
+
+    humanoid.JumpPower = options.JumpPower.Value
 end))
 
 ------------------------------------------------
