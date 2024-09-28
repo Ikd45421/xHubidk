@@ -409,7 +409,7 @@ library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
 end))
 
 library:GiveSignal(rooms.ChildAdded:Connect(function(room)
-    if toggles.RareRoomNotifier.Value and room.Name == "ValculaVoidMass" then
+    if toggles.RareRoomNotifier.Value and room.Name == "ValculaVoidMass" | "Mindscape" then
         getgenv().Alert("The next room is rare!")
     end
 
@@ -457,6 +457,24 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
 
     if toggles.ThirdPerson.Value and options.ThirdPersonKey:GetState() then
         camera.CFrame = camera.CFrame * CFrame.new(1.5, -0.5, 6.5)
+    end
+
+    if toggles.AutoGenerator.Value then
+        task.spawn(function()
+            local loop = workspace:FindFirstChild("RegSearchlightsLoop")
+
+            if loop and loop.Playing then
+                local room = rooms:FindFirstChild("SearchlightsEncounter")
+
+                if not room then return end
+
+                for _, gen in pairs(room.Interactables:GetChildren()) do
+                    if gen.Name == "EncounterGenerator" then
+                        gen.RemoteEvent:FireServer(15)
+                    end
+                end
+            end
+        end)
     end
 
     local speedBoost = options.SpeedBoost.Value
