@@ -583,3 +583,20 @@ themes:ApplyToTab(tabs.Settings)
 saves:BuildConfigSection(tabs.Settings)
 
 saves:LoadAutoloadConfig()
+
+-- Event Hooking
+local zoneChangeEvent = game.ReplicatedStorage.Events.ZoneChange
+
+local oldFireServer
+oldFireServer = hookmetamethod(game, "__namecall", function(self, ...)
+    local method = getnamecallmethod()
+
+    if method == "FireServer" and self == zoneChangeEvent then
+        local args = { ... }
+        local room = args[1]
+
+        library:Notify("Entered room: " .. room.Name)
+    end
+
+    return oldFireServer(self, ...)
+end)
