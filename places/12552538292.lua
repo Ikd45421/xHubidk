@@ -506,24 +506,6 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
         camera.FieldOfView = options.FieldOfView.Value
     end
 
-    -- if toggles.AutoGenerator.Value then
-    --     task.spawn(function()
-    --         local loop = workspace:FindFirstChild("RegSearchlightsLoop")
-
-    --         if loop and loop.Playing then
-    --             local room = rooms:FindFirstChild("SearchlightsEncounter")
-
-    --             if not room then return end
-
-    --             for _, gen in pairs(room.Interactables:GetChildren()) do
-    --                 if gen.Name == "EncounterGenerator" then
-    --                     gen.RemoteEvent:FireServer(15)
-    --                 end
-    --             end
-    --         end
-    --     end)
-    -- end
-
     player.Character.Humanoid.WalkSpeed = 16 + options.SpeedBoost.Value
 
     player.Character.Humanoid.JumpHeight = options.JumpHeight.Value
