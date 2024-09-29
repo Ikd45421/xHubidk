@@ -67,7 +67,7 @@ end
 
 --// UI \\--
 local window = library:CreateWindow({
-    Title = "xHub",
+    Title = "xHub - " .. player.DisplayName,
     Center = true,
     AutoShow = true
 })
@@ -438,7 +438,7 @@ library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
 end))
 
 library:GiveSignal(rooms.ChildAdded:Connect(function(room)
-    if toggles.RareRoomNotifier.Value and (room.Name == "ValculaVoidMass" or room.Name == "Mindscape") then
+    if toggles.RareRoomNotifier.Value and (room.Name == "ValculaVoidMass" or room.Name == "Mindscape" or room.Name == "KeyKeyKeyKeyKey" or string.find(room.Name, "IntentionallyUnfinished") or room.Name == "AirlockStart") then
         getgenv().Alert("The next room is rare!")
     end
 

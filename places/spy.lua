@@ -7,7 +7,8 @@ oldFireServer = hookmetamethod(game, "__namecall", function(self, ...)
     if method == "FireServer" and self == zoneChangeEvent then
         local args = {...}
         local room = args[1]
-        print("Zone Change Called: " .. room.Name)
+        
+        print("Room Entered! Room:", room.Name)
     end
 
     return oldFireServer(self, ...)
