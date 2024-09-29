@@ -583,13 +583,3 @@ themes:ApplyToTab(tabs.Settings)
 saves:BuildConfigSection(tabs.Settings)
 
 saves:LoadAutoloadConfig()
-
-local zoneChangeEvent = repStorage:WaitForChild("Events"):WaitForChild("ZoneChange")
-
-local fireEvent = zoneChangeEvent.FireServer
-
-zoneChangeEvent.FireServer = function(self, room)
-    print("Zone Change Called: " .. room.Name)
-
-    fireEvent(self, room)
-end
