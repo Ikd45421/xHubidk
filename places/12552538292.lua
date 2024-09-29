@@ -577,7 +577,7 @@ oldFireServer = hookmetamethod(game, "__namecall", function(self, ...)
         local args = { ... }
         local room = args[1]
 
-        library:Notify("Entered room: " .. room.Name)
+        print(room.Name)
     end
 
     return oldFireServer(self, ...)
