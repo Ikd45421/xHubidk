@@ -31,8 +31,6 @@ ESPLib:SetDebugEnabled(true)
 
 local player = players.LocalPlayer
 local playerGui = player.PlayerGui
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character.Humanoid
 local camera = workspace.CurrentCamera
 
 local nodeMonsters = {
@@ -48,11 +46,11 @@ local nodeMonsters = {
     "RidgeBlitz"
 }
 
-local function setupMonsterESP(monster)
+local function setupMonsterESP(monster, name)
     if not toggles.EntityESP.Value then return end
 
     ESPLib.ESP.Highlight({
-        Name = string.gsub(monster.Name, "Ridge", ""),
+        Name = name or monster.Name,
         Model = monster,
         FillColor = options.EntityColour.Value,
         OutlineColor = options.EntityColour.Value,
@@ -98,8 +96,19 @@ main.Movement:AddSlider("SpeedBoost", {
     Rounding = 0
 })
 
+main.Movement:AddToggle("FasterSpeed", {
+    Text = "Faster than the monsters!",
+    Callback = function(value)
+        if value then
+            options.SpeedBoost:SetMax(90)
+        else
+            options.SpeedBoost:SetMax(45)
+        end
+    end
+})
+
 main.Movement:AddSlider("JumpHeight", {
-    Text = "Jump Height",
+    Text = "Jump Power",
     Default = 0,
     Min = 0,
     Max = 20,
@@ -207,9 +216,9 @@ visual.Camera:AddToggle("ThirdPerson", {
     Mode = "Toggle",
     Callback = function(value)
         if value then
-            character.Head.Transparency = 0
+            player.Character.Head.Transparency = 0
         else
-            character.Head.Transparency = 1
+            player.Character.Head.Transparency = 1
         end
     end
 })
@@ -390,9 +399,11 @@ library:GiveSignal(workspace.ChildAdded:Connect(function(child)
     if toggles.NodeMonsterNotifier.Value then
         for _, monster in ipairs(nodeMonsters) do
             if child.Name == monster then
-                getgenv().Alert(string.gsub(monster, "Ridge", "") .. " spawned. Hide!")
+                local name = string.gsub(monster, "Ridge", "")
 
-                if options.EntityESPList.Value["Node Monsters"] then setupMonsterESP(child) end
+                getgenv().Alert(name .. " spawned. Hide!")
+
+                if options.EntityESPList.Value["Node Monsters"] then setupMonsterESP(child, name) end
             end
         end
     end
@@ -415,7 +426,7 @@ library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
         getgenv().Alert("A Wall Dweller has spawned in the walls. Find it!")
     end
 
-    if options.EntityESPList.Value["Wall Dwellers"] then setupMonsterESP(monster) end
+    if options.EntityESPList.Value["Wall Dwellers"] then setupMonsterESP(monster, "Wall Dweller") end
 end))
 
 library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
@@ -431,15 +442,15 @@ library:GiveSignal(rooms.ChildAdded:Connect(function(room)
         getgenv().Alert("The next room is rare!")
     end
 
-    if toggles.TurretNotifier.Value and string.match(room.Name, "Turret") then
+    if toggles.TurretNotifier.Value and string.find(room.Name, "Turret") then
         getgenv().Alert("Turrets will spawn in the next room!")
     end
 
-    if toggles.GauntletNotifier.Value and string.match(room.Name, "Gauntlet") then
+    if toggles.GauntletNotifier.Value and string.find(room.Name, "Gauntlet") then
         getgenv().Alert("The next room is a gauntlet. Good luck!")
     end
 
-    if toggles.PuzzleNotifier.Value and (string.match(room.Name, "PipeBoardPuzzle") or string.match(room.Name, "SteamPuzzle")) then
+    if toggles.PuzzleNotifier.Value and (string.find(room.Name, "PipeBoard") or string.find(room.Name, "Steam")) then
         getgenv().Alert("The next room is a puzzle!")
     end
 
@@ -487,7 +498,7 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
         end
     end
 
-    if character.Parent.Name == "Characters" then
+    if player.Character.Parent.Name == "Characters" then
         if toggles.ThirdPerson.Value and options.ThirdPersonKey:GetState() then
             camera.CFrame = camera.CFrame * CFrame.new(1.5, -0.5, 6.5)
         end
@@ -513,9 +524,9 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
     --     end)
     -- end
 
-    humanoid.WalkSpeed = 16 + options.SpeedBoost.Value
+    player.Character.Humanoid.WalkSpeed = 16 + options.SpeedBoost.Value
 
-    humanoid.JumpHeight = options.JumpHeight.Value
+    player.Character.Humanoid.JumpHeight = options.JumpHeight.Value
 end))
 
 ------------------------------------------------
