@@ -567,7 +567,7 @@ saves:BuildConfigSection(tabs.Settings)
 saves:LoadAutoloadConfig()
 
 -- Event Hooking
-local zoneChangeEvent = game.ReplicatedStorage.Events.ZoneChange
+local zoneChangeEvent = repStorage:WaitForChild("Events"):WaitForChild("ZoneChange")
 
 local oldFireServer
 oldFireServer = hookmetamethod(game, "__namecall", function(self, ...)
