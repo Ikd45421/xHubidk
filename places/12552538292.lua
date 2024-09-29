@@ -135,7 +135,7 @@ main.Interaction:AddToggle("AutoInteract", {
     Mode = "Hold"
 })
 
-main.Interaction:AddToggle("AutoGenerator", { Text = "Auto Searchlights Generator" })
+main.Interaction:AddToggle("AutoGenerator", { Text = "Auto Searchlights Generator", Risky = true })
 
 main.Sound:AddToggle("NoAmbience", {
     Text = "Mute Ambience",
@@ -495,23 +495,23 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
         camera.FieldOfView = options.FieldOfView.Value
     end
 
-    if toggles.AutoGenerator.Value then
-        task.spawn(function()
-            local loop = workspace:FindFirstChild("RegSearchlightsLoop")
+    -- if toggles.AutoGenerator.Value then
+    --     task.spawn(function()
+    --         local loop = workspace:FindFirstChild("RegSearchlightsLoop")
 
-            if loop and loop.Playing then
-                local room = rooms:FindFirstChild("SearchlightsEncounter")
+    --         if loop and loop.Playing then
+    --             local room = rooms:FindFirstChild("SearchlightsEncounter")
 
-                if not room then return end
+    --             if not room then return end
 
-                for _, gen in pairs(room.Interactables:GetChildren()) do
-                    if gen.Name == "EncounterGenerator" then
-                        gen.RemoteEvent:FireServer(15)
-                    end
-                end
-            end
-        end)
-    end
+    --             for _, gen in pairs(room.Interactables:GetChildren()) do
+    --                 if gen.Name == "EncounterGenerator" then
+    --                     gen.RemoteEvent:FireServer(15)
+    --                 end
+    --             end
+    --         end
+    --     end)
+    -- end
 
     humanoid.WalkSpeed = 16 + options.SpeedBoost.Value
 
