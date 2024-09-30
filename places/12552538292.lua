@@ -46,23 +46,64 @@ local nodeMonsters = {
     "RidgeBlitz"
 }
 
+local activeESP = {
+    CurrentRoom = {}
+}
+
+local function _setupESP(properties)
+    local esp = ESPLib.ESP.Highlight({
+        Name = properties.Name or "No Text",
+        Model = properties.Object,
+        FillColor = properties.FillColour,
+        OutlineColor = properties.OutlineColour,
+        TextColor = properties.EntityColour,
+
+        Tracer = {
+            Enabled = properties.Tracer.Enabled,
+            From = "Bottom",
+            Color = properties.Tracer.Colour
+        }
+    })
+
+    return esp
+end
+
 local function setupMonsterESP(monster, name)
     if not toggles.EntityESP.Value then return end
 
-    ESPLib.ESP.Highlight({
+    local colour = options.EntityColour.Value
+
+    _setupESP({
         Name = name or monster.Name,
         Model = monster,
-        FillColor = options.EntityColour.Value,
-        OutlineColor = options.EntityColour.Value,
-        TextColor = options.EntityColour.Value,
-        TextSize = 16,
-
+        FillColor = colour,
+        OutlineColor = colour,
+        TextColor = colour,
         Tracer = {
             Enabled = toggles.EntityESPTracer.Value,
-            From = "Bottom",
-            Color = options.EntityColour.Value
+            Color = colour
         }
     })
+end
+
+local function setupItemESP(item, name)
+    if not toggles.InteractableESP.Value then return end
+
+    local colour = options.ItemColour.Value
+
+    local esp = _setupESP({
+        Name = name or item.Name,
+        Model = item,
+        FillColor = colour,
+        OutlineColor = colour,
+        TextColor = colour,
+        Tracer = {
+            Enabled = toggles.InteractableESPTracer.Value,
+            Color = colour
+        }
+    })
+
+    table.insert(activeESP.CurrentRoom, esp)
 end
 
 --// UI \\--
@@ -286,7 +327,7 @@ local esp = {
     Colours = tabs.ESP:AddRightGroupbox("Colours")
 }
 
-esp.Interactables:AddToggle("InteractableESP", { Text = "Enabled", Risky = true })
+esp.Interactables:AddToggle("InteractableESP", { Text = "Enabled" })
 
 esp.Interactables:AddDivider()
 
@@ -307,11 +348,15 @@ esp.Interactables:AddDropdown("InteractableESPList", {
 
 esp.Interactables:AddDivider()
 
-esp.Interactables:AddToggle("InteractableESPName", { Text = "Name", Risky = true })
+esp.Interactables:AddToggle("InteractableESPName", { Text = "Name" })
 
-esp.Interactables:AddToggle("InteractableESPDistance", { Text = "Distance", Risky = true })
+esp.Interactables:AddToggle("InteractableESPDistance", {
+    Text = "Distance",
+    Risky = true,
+    Tooltip = "Not Implemented Yet"
+})
 
-esp.Interactables:AddToggle("InteractableESPTracer", { Text = "Tracers", Risky = true })
+esp.Interactables:AddToggle("InteractableESPTracer", { Text = "Tracers" })
 
 esp.Entities:AddToggle("EntityESP", { Text = "Enabled" })
 
@@ -333,7 +378,11 @@ esp.Entities:AddDivider()
 
 esp.Entities:AddToggle("EntityESPName", { Text = "Name" })
 
-esp.Entities:AddToggle("EntityESPDistance", { Text = "Distance" })
+esp.Entities:AddToggle("EntityESPDistance", {
+    Text = "Distance",
+    Risky = true,
+    Tooltip = "Not Implemented Yet"
+})
 
 esp.Entities:AddToggle("EntityESPTracer", { Text = "Tracer" })
 
@@ -478,7 +527,7 @@ library:GiveSignal(runService.RenderStepped:Connect(function()
 
     if toggles.NoFootsteps.Value then
         for _, char in pairs(workspace.Characters:GetChildren()) do
-            for _, child in next, char.LowerTorso:GetChildren() do
+            for _, child in (char.LowerTorso:GetChildren()) do
                 if child:IsA("Sound") then
                     child:Destroy()
                 end
@@ -569,16 +618,34 @@ saves:LoadAutoloadConfig()
 -- Event Hooking
 local zoneChangeEvent = repStorage:WaitForChild("Events"):WaitForChild("ZoneChange")
 
-local oldFireServer
-oldFireServer = hookmetamethod(game, "__namecall", function(self, ...)
+local oldMethod
+oldMethod = hookmetamethod(game, "__namecall", function(self, ...)
     local method = getnamecallmethod()
 
-    if method == "FireServer" and self == zoneChangeEvent then
-        local args = { ... }
-        local room = args[1]
+    if method == "FireServer" then
+        if self == zoneChangeEvent then
+            local args = { ... }
+            local room = args[1]
 
-        print(room.Name)
+            for _, esp in pairs(activeESP.CurrentRoom) do
+                esp.Destroy()
+            end
+
+            for _, thing in pairs(room:GetChildren()) do
+                local locations = thing:FindFirstChild("SpawnLocations")
+
+                if locations then
+                    for _, location in pairs(locations:GetChildren()) do
+                        local item = location:FindFirstChildWhichIsA("Model")
+
+                        if item then
+                            setupItemESP(item)
+                        end
+                    end
+                end
+            end
+        end
     end
 
-    return oldFireServer(self, ...)
+    return oldMethod(self, ...)
 end)
