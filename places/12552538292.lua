@@ -53,7 +53,7 @@ local activeESP = {
 local function _setupESP(properties)
     local esp = ESPLib.ESP.Highlight({
         Name = properties.Name or "No Text",
-        Model = properties.Object,
+        Model = properties.Model,
         FillColor = properties.FillColour,
         OutlineColor = properties.OutlineColour,
         TextColor = properties.EntityColour,
