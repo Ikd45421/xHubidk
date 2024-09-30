@@ -18,6 +18,7 @@ local proximityPromptService = game:GetService("ProximityPromptService")
 
 local rooms = workspace:WaitForChild("Rooms")
 local monsters = workspace:WaitForChild("Monsters")
+local currentRoom = rooms:WaitForChild("Start")
 
 local ESPLib = getgenv().mstudio45.ESPLibrary
 local themes = getgenv().ThemeManager
@@ -119,7 +120,7 @@ local function setupCurrentRoomESP(room)
             for _, location in pairs(locations:GetChildren()) do
                 local item = location:FindFirstChildWhichIsA("Model")
 
-                if item then
+                if item and string.find(item.Name, "Currency") then
                     setupItemESP(item)
                 end
             end
@@ -371,7 +372,18 @@ esp.Interactables:AddDropdown("InteractableESPList", {
 
 esp.Interactables:AddDivider()
 
-esp.Interactables:AddToggle("InteractableESPName", { Text = "Name" })
+esp.Interactables:AddToggle("InteractableESPName", {
+    Text = "Name",
+    Callback = function(value)
+        if value then
+            setupCurrentRoomESP(currentRoom)
+        else
+            for _, _esp in pairs(activeESP.CurrentRoom) do
+                _esp.Destroy()
+            end
+        end
+    end
+})
 
 esp.Interactables:AddToggle("InteractableESPDistance", {
     Text = "Distance",
@@ -656,6 +668,8 @@ oldMethod = hookmetamethod(game, "__namecall", function(self, ...)
         if self == zoneChangeEvent then
             local args = { ... }
             local room = args[1]
+
+            currentRoom = room
 
             task.spawn(setupCurrentRoomESP, room)
         end
