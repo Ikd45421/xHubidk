@@ -60,7 +60,6 @@ local function _setupESP(properties)
 
         Tracer = {
             Enabled = properties.Tracer.Enabled,
-            From = "Bottom",
             Color = properties.Tracer.Colour
         }
     })
@@ -79,6 +78,7 @@ local function setupMonsterESP(monster, name)
         FillColor = colour,
         OutlineColor = colour,
         TextColor = colour,
+
         Tracer = {
             Enabled = toggles.EntityESPTracer.Value,
             Color = colour
@@ -97,6 +97,7 @@ local function setupItemESP(item, name)
         FillColor = colour,
         OutlineColor = colour,
         TextColor = colour,
+
         Tracer = {
             Enabled = toggles.InteractableESPTracer.Value,
             Color = colour
@@ -104,6 +105,26 @@ local function setupItemESP(item, name)
     })
 
     table.insert(activeESP.CurrentRoom, esp)
+end
+
+local function setupCurrentRoomESP(room)
+    for _, esp in pairs(activeESP.CurrentRoom) do
+        esp.Destroy()
+    end
+
+    for _, thing in pairs(room:GetChildren()) do
+        local locations = thing:FindFirstChild("SpawnLocations")
+
+        if locations then
+            for _, location in pairs(locations:GetChildren()) do
+                local item = location:FindFirstChildWhichIsA("Model")
+
+                if item then
+                    setupItemESP(item)
+                end
+            end
+        end
+    end
 end
 
 --// UI \\--
@@ -308,9 +329,11 @@ notifiers.Entity:AddToggle("WallDwellerNotifier", { Text = "Wall Dweller Notifie
 
 notifiers.Entity:AddToggle("EyefestationNotifier", { Text = "Eyefestation Notifier", Risky = true })
 
+notifiers.Entity:AddToggle("LopeeNotifier", { Text = "Mr. Lopee Notifier " })
+
 notifiers.Rooms:AddToggle("TurretNotifier", { Text = "Turret Notifier" })
 
-notifiers.Rooms:AddToggle("GauntletNotifier", { Text = "Guantlet Notifier" })
+notifiers.Rooms:AddToggle("GauntletNotifier", { Text = "Gauntlet Notifier" })
 
 notifiers.Rooms:AddToggle("PuzzleNotifier", { Text = "Puzzle Room Notifier" })
 
@@ -468,6 +491,10 @@ library:GiveSignal(workspace.ChildAdded:Connect(function(child)
     if toggles.LessLag.Value and child.Name == "VentCover" then
         child:Destroy()
     end
+
+    if toggles.LopeeNotifier.Value and child.Name == "LopeePart" then
+        getgenv().Alert("Mr. Lopee spawned!")
+    end
 end))
 
 library:GiveSignal(monsters.ChildAdded:Connect(function(monster)
@@ -481,7 +508,11 @@ end))
 library:GiveSignal(playerGui.ChildAdded:Connect(function(child)
     if child.Name ~= "Pixel" then return end
 
-    if not child:FindFirstChild("ViewportFrame") then return end
+    local friend = child.ViewportFrame:FindFirstChild("ImaginaryFriend")
+
+    if friend then
+        friend.Friend.Transparency = 1
+    end
 
     child.ViewportFrame.ImaginaryFriend.Friend.Transparency = 1
 end))
@@ -621,29 +652,12 @@ local zoneChangeEvent = repStorage:WaitForChild("Events"):WaitForChild("ZoneChan
 local oldMethod
 oldMethod = hookmetamethod(game, "__namecall", function(self, ...)
     local method = getnamecallmethod()
-
     if method == "FireServer" then
         if self == zoneChangeEvent then
             local args = { ... }
             local room = args[1]
 
-            for _, esp in pairs(activeESP.CurrentRoom) do
-                esp.Destroy()
-            end
-
-            for _, thing in pairs(room:GetChildren()) do
-                local locations = thing:FindFirstChild("SpawnLocations")
-
-                if locations then
-                    for _, location in pairs(locations:GetChildren()) do
-                        local item = location:FindFirstChildWhichIsA("Model")
-
-                        if item then
-                            setupItemESP(item)
-                        end
-                    end
-                end
-            end
+            task.spawn(setupCurrentRoomESP, room)
         end
     end
 
