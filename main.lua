@@ -15,7 +15,7 @@ getgenv().Alert = function(message)
     library:Notify(message, 5, "rbxassetid://4590662766")
 end
 
-local placesRepo = "https://raw.githubusercontent.com/xBackpack/xHub/refs/heads/main/places/"
+local placesRepo = "https://raw.githubusercontent.com/Ikd45421/xHubidk/main/places/"
 
 for _, id in ipairs(validPlaceIds) do
     if game.PlaceId == id then
