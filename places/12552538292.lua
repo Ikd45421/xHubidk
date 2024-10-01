@@ -1,8 +1,8 @@
 --// SETUP \\--
 local library = getgenv().Library
 
-if not getgenv().xhub_loaded then
-    getgenv().xhub_loaded = true
+if not getgenv().xhubidk_loaded then
+    getgenv().xhubidk_loaded = true
 else
     library:Notify("Already Loaded!")
     return
@@ -26,7 +26,7 @@ local saves = getgenv().SaveManager
 local options = getgenv().Linoria.Options
 local toggles = getgenv().Linoria.Toggles
 
-ESPLib:SetPrefix("xHub")
+ESPLib:SetPrefix("xHubidk")
 ESPLib:SetIsLoggingEnabled(true)
 ESPLib:SetDebugEnabled(true)
 
@@ -130,7 +130,7 @@ end
 
 --// UI \\--
 local window = library:CreateWindow({
-    Title = "xHub - " .. player.DisplayName,
+    Title = " - " .. player.DisplayName,
     Center = true,
     AutoShow = true
 })
@@ -639,7 +639,7 @@ library:OnUnload(function()
     getgenv().Alert("Unloading!")
     ESPLib.ESP.Clear()
     getgenv().Alert = nil
-    getgenv().xhub_loaded = nil
+    getgenv().xhubidk_loaded = nil
     task.wait(.5)
 end)
 
