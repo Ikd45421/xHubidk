@@ -155,7 +155,7 @@ main.Movement:AddSlider("SpeedBoost", {
     Text = "Speed Boost",
     Default = 0,
     Min = 0,
-    Max = 45,
+    Max = 450,
     Rounding = 0
 })
 
@@ -163,9 +163,9 @@ main.Movement:AddToggle("FasterSpeed", {
     Text = "Faster than the monsters!",
     Callback = function(value)
         if value then
-            options.SpeedBoost:SetMax(90)
+            options.SpeedBoost:SetMax(900)
         else
-            options.SpeedBoost:SetMax(45)
+            options.SpeedBoost:SetMax(450)
         end
     end
 })
